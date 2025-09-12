@@ -21,15 +21,12 @@
     nav a:hover::after { width: 100%; }
 
     /* Hero */
-    header { background: linear-gradient(135deg, #0f172a, #1e293b); color: white; text-align: center; padding: 6rem 2rem; position: relative; overflow: hidden; }
-    header h1 { font-size: 3rem; margin-bottom: 0.5rem; animation: fadeDown 1s ease; }
-    header p { font-size: 1.2rem; opacity: 0.9; }
-    .tagline { margin-top: 1rem; font-weight: 600; font-size: 1.2rem; color: #0ea5e9; height: 30px; }
-
-    /* Typing animation */
-    .typing { border-right: 3px solid #0ea5e9; white-space: nowrap; overflow: hidden; display: inline-block; animation: typing 4s steps(40, end) infinite alternate, blink 0.75s step-end infinite; }
+    header { background: linear-gradient(135deg, #0f172a, #1e293b); color: white; text-align: center; padding: 6rem 2rem; position: relative; }
+    header h1 { font-size: 3rem; margin-bottom: 0.5rem; }
+    .typing { border-right: 3px solid #0ea5e9; white-space: nowrap; overflow: hidden; display: inline-block; animation: typing 6s steps(50, end) infinite alternate, blink 0.75s step-end infinite; }
     @keyframes typing { from { width: 0; } to { width: 100%; } }
     @keyframes blink { 50% { border-color: transparent; } }
+    .tagline { margin-top: 1rem; font-weight: 600; font-size: 1.2rem; color: #0ea5e9; }
 
     /* Sections */
     section { max-width: 1100px; margin: 3rem auto; padding: 0 1rem; }
@@ -40,33 +37,26 @@
     .skills-icons i { transition: transform 0.4s ease, color 0.3s; }
     .skills-icons i:hover { transform: rotate(15deg) scale(1.3); color: #0ea5e9; }
 
-    /* Services */
-    .services { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; }
-    .service-card { background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 3px 10px rgba(0,0,0,0.1); text-align: center; transition: 0.4s; }
-    .service-card:hover { transform: translateY(-10px) scale(1.03); box-shadow: 0 8px 20px rgba(14,165,233,0.3); }
-    .service-card i { font-size: 2rem; color: #0ea5e9; margin-bottom: 0.5rem; transition: 0.3s; }
-    .service-card:hover i { transform: scale(1.3); }
+    /* Cards (services, projects, etc.) */
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; }
+    .card { background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 3px 10px rgba(0,0,0,0.1); transition: 0.4s; }
+    .card:hover { transform: translateY(-10px) scale(1.03); box-shadow: 0 8px 20px rgba(14,165,233,0.3); }
+    .card i { font-size: 2rem; color: #0ea5e9; margin-bottom: 0.5rem; display: block; }
 
     /* Work */
     .work-item { background: #fff; padding: 1.2rem; margin-bottom: 1rem; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); transition: 0.3s; }
     .work-item:hover { transform: scale(1.02); background: #f1f5f9; }
     .work-item ul { margin-top: 0.5rem; padding-left: 1.2rem; }
 
-    /* Projects */
-    .projects { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
-    .project-card { background: white; padding: 1rem; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: 0.3s; }
-    .project-card:hover { transform: translateY(-10px); box-shadow: 0 8px 20px rgba(14,165,233,0.3); }
-
     /* Contact */
     .contact { text-align: center; }
     .contact a { margin: 0.5rem; text-decoration: none; font-weight: bold; color: #1e293b; transition: 0.3s; }
     .contact a:hover { color: #0ea5e9; transform: scale(1.1); display: inline-block; }
+    .btn { background: #0ea5e9; color: white; padding: 0.6rem 1.2rem; border-radius: 5px; text-decoration: none; transition: 0.3s; }
+    .btn:hover { background: #0284c7; }
 
     /* Footer */
     footer { background: #0f172a; color: white; text-align: center; padding: 1rem; margin-top: 3rem; }
-
-    /* Animations */
-    @keyframes fadeDown { from { opacity: 0; transform: translateY(-20px);} to { opacity: 1; transform: translateY(0);} }
   </style>
 </head>
 <body>
@@ -77,6 +67,7 @@
       <li><a href="#summary">Summary</a></li>
       <li><a href="#skills">Skills</a></li>
       <li><a href="#services">What I Do</a></li>
+      <li><a href="#whyme">Why Me</a></li>
       <li><a href="#work">Experience</a></li>
       <li><a href="#projects">Projects</a></li>
       <li><a href="#contact">Contact</a></li>
@@ -86,7 +77,7 @@
   <!-- Hero -->
   <header>
     <h1>Pavan Kumar KR</h1>
-    <p class="typing">Full-Stack Developer | Cloud Engineer | AI/ML Specialist</p>
+    <p class="typing">Full-Stack & Cloud Engineer | AI/ML Specialist | Prompt Developer</p>
     <p class="tagline">🚀 Turning business scenarios into scalable, intelligent solutions</p>
   </header>
 
@@ -94,11 +85,13 @@
   <section id="summary">
     <h2>Professional Summary</h2>
     <p>
-      I am a <b>Full-Stack and Cloud Engineer</b> with <b>3+ years of experience</b> in building 
-      scalable web applications, cloud-native systems, and AI/ML-driven solutions. 
-      Skilled at <b>architecture-level design</b> and <b>discussing technical strategies with CEOs and stakeholders</b>.  
-      Strong in <b>problem-solving</b>, <b>understanding business scenarios</b>, and translating them into 
-      <b>high-value technical solutions</b>.
+      I am a results-driven <b>Full-Stack and Cloud Engineer</b> with <b>3+ years of experience</b> delivering 
+      intelligent, scalable solutions across multiple domains. My expertise spans <b>AI/ML systems, 
+      cloud-native architectures, and enterprise full-stack development</b>.  
+      Skilled at <b>translating complex business scenarios into technical strategies</b>, 
+      I collaborate with <b>CXOs and stakeholders</b> to design solutions that balance 
+      <b>innovation, cost optimization, and long-term scalability</b>.  
+      Passionate about <b>problem-solving, automation, and emerging technologies</b> that drive measurable business value.
     </p>
   </section>
 
@@ -129,28 +122,24 @@
   <!-- What I Do -->
   <section id="services">
     <h2>What I Do</h2>
-    <div class="services">
-      <div class="service-card">
-        <i class="fa-solid fa-brain"></i>
-        <h3>AI & ML Solutions</h3>
-        <p>Deliver intelligent systems using NLP, deep learning, and predictive modeling to solve real-world problems.</p>
-      </div>
-      <div class="service-card">
-        <i class="fa-solid fa-code"></i>
-        <h3>Full-Stack Development</h3>
-        <p>Build scalable web apps with React, Django, Node.js, and modern UI frameworks.</p>
-      </div>
-      <div class="service-card">
-        <i class="fa-solid fa-cloud"></i>
-        <h3>Cloud Engineering</h3>
-        <p>Deploy cost-optimized, multi-cloud solutions across AWS, GCP, Azure, and DigitalOcean.</p>
-      </div>
-      <div class="service-card">
-        <i class="fa-solid fa-keyboard"></i>
-        <h3>Prompt Engineering</h3>
-        <p>Design optimized prompts and workflows to maximize LLM and generative AI capabilities.</p>
-      </div>
+    <div class="grid">
+      <div class="card"><i class="fa-solid fa-brain"></i><h3>AI & ML Solutions</h3><p>Deliver intelligent systems using NLP, deep learning, and predictive modeling to solve real-world problems.</p></div>
+      <div class="card"><i class="fa-solid fa-code"></i><h3>Full-Stack Development</h3><p>Build scalable web apps with React, Django, Node.js, and modern UI frameworks.</p></div>
+      <div class="card"><i class="fa-solid fa-cloud"></i><h3>Cloud Engineering</h3><p>Deploy cost-optimized, multi-cloud solutions across AWS, GCP, Azure, and DigitalOcean.</p></div>
+      <div class="card"><i class="fa-solid fa-keyboard"></i><h3>Prompt Engineering</h3><p>Design optimized prompts and workflows to maximize LLM and generative AI capabilities.</p></div>
     </div>
+  </section>
+
+  <!-- Why Me -->
+  <section id="whyme">
+    <h2>Why Work With Me?</h2>
+    <ul>
+      <li>✅ Proven track record of building <b>scalable full-stack applications</b>.</li>
+      <li>✅ Strong expertise in <b>multi-cloud engineering</b> (AWS, GCP, Azure, DigitalOcean).</li>
+      <li>✅ Ability to <b>bridge business needs with technical execution</b> through architecture-level thinking.</li>
+      <li>✅ Skilled in <b>AI/ML, automation, and prompt engineering</b> for innovative solutions.</li>
+      <li>✅ Experience working directly with <b>CXOs, product owners, and technical teams</b>.</li>
+    </ul>
   </section>
 
   <!-- Work -->
@@ -159,21 +148,20 @@
     <div class="work-item">
       <h3>Full-Stack & Cloud Engineer — Codeland Infosolutions Pvt. Ltd</h3>
       <ul>
-        <li>Led <b>full-stack projects</b> with React, Django, Node.js ensuring high performance and scalability.</li>
-        <li>Designed and deployed solutions across <b>AWS, Google Cloud, Azure, DigitalOcean, and Oracle Cloud</b>.</li>
-        <li>Worked closely with <b>CEOs and stakeholders</b> to align technology with business strategy.</li>
-        <li>Delivered <b>AI/ML-driven automation</b> that improved efficiency by 40%.</li>
-        <li>Architected enterprise systems translating <b>business needs</b> into scalable technical solutions.</li>
+        <li>Architected <b>enterprise-grade full-stack applications</b> with React, Django, Node.js, improving performance and scalability.</li>
+        <li>Deployed and optimized workloads across <b>AWS, Google Cloud, Azure, DigitalOcean, and Oracle Cloud</b>, cutting costs by <b>40%</b>.</li>
+        <li>Delivered <b>AI/ML automation systems</b> that increased efficiency by <b>30%</b>.</li>
+        <li>Collaborated with <b>CXOs and stakeholders</b> to align technology with business strategy.</li>
+        <li>Implemented <b>CI/CD pipelines</b> with Docker, Jenkins, and GitLab, reducing release cycles by <b>50%</b>.</li>
       </ul>
     </div>
-
     <div class="work-item">
       <h3>Software Developer — Codeland Infosolutions Pvt. Ltd</h3>
       <ul>
-        <li>Developed Python, Java, and C# backend services with robust coding standards.</li>
+        <li>Developed backend services in <b>Python, Java, and C#</b> ensuring modular and maintainable code.</li>
         <li>Integrated <b>databases</b> like PostgreSQL, MongoDB, SQL Server, and MySQL.</li>
-        <li>Built responsive interfaces with <b>React, Bootstrap, TailwindCSS, and jQuery</b>.</li>
-        <li>Supported cloud migration initiatives to <b>AWS and GCP</b>.</li>
+        <li>Built responsive UIs with <b>React, Bootstrap, TailwindCSS, and jQuery</b>.</li>
+        <li>Supported <b>cloud migration projects</b> enabling seamless transition to AWS and GCP.</li>
       </ul>
     </div>
   </section>
@@ -181,19 +169,10 @@
   <!-- Projects -->
   <section id="projects">
     <h2>Key Projects</h2>
-    <div class="projects">
-      <div class="project-card">
-        <h3>AI Chatbot</h3>
-        <p>Designed an NLP-based chatbot that reduced customer support workload by 60% and increased engagement.</p>
-      </div>
-      <div class="project-card">
-        <h3>Cloud Cost Optimizer</h3>
-        <p>Built a system that reduced cloud spend by 40% across multi-cloud environments (AWS, GCP, Azure).</p>
-      </div>
-      <div class="project-card">
-        <h3>Analytics Platform</h3>
-        <p>Developed a full-stack analytics dashboard using Django, React, and PostgreSQL for real-time insights.</p>
-      </div>
+    <div class="grid">
+      <div class="card"><h3>AI Chatbot</h3><p>Designed an NLP-based chatbot that reduced support workload by <b>60%</b> and increased engagement.</p></div>
+      <div class="card"><h3>Cloud Cost Optimizer</h3><p>Built a system that reduced cloud spend by <b>$150K+ annually</b> across AWS, GCP, and Azure.</p></div>
+      <div class="card"><h3>Real-Time Analytics Dashboard</h3><p>Developed a full-stack analytics platform using Django, React, and PostgreSQL, accelerating decision-making by <b>45%</b>.</p></div>
     </div>
   </section>
 
@@ -204,7 +183,8 @@
     <a href="mailto:pavankumarkr98@gmail.com"><i class="fa-solid fa-envelope"></i> Email</a>
     <a href="tel:+919945730082"><i class="fa-solid fa-phone"></i> Call</a>
     <a href="https://github.com/" target="_blank"><i class="fab fa-github"></i> GitHub</a>
-    <a href="https://linkedin.com/" target="_blank"><i class="fab fa-linkedin"></i> LinkedIn</a>
+    <a href="https://linkedin.com/" target="_blank"><i class="fab fa-linkedin"></i> LinkedIn</a><br><br>
+    <a href="resume.pdf" class="btn" download><i class="fa-solid fa-download"></i> Download Resume</a>
   </section>
 
   <!-- Footer -->
