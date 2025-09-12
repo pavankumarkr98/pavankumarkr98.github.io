@@ -1,124 +1,233 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pavan Kumar KR - Portfolio</title>
+  
   <!-- Font Awesome & Devicon -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.15.1/devicon.min.css" />
-  <!-- AOS Animation -->
-  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.15.1/devicon.min.css">
+
   <style>
+    /* General */
     body {
-      margin: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(to right, #e0f2f1, #f5f7fa);
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #eef2f3, #d9e4ec);
       color: #333;
+      line-height: 1.6;
     }
-    header {
-      background: #0f172a;
+
+    /* Navbar */
+    nav {
+      background: #1e293b;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 1.5rem;
+      margin: 0;
+      padding: 0;
+    }
+    nav ul li {
+      position: relative;
+    }
+    nav ul li a {
+      text-decoration: none;
       color: white;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+    nav ul li a:hover {
+      color: #0ea5e9;
+    }
+
+    /* Submenu */
+    nav ul li ul {
+      display: none;
+      position: absolute;
+      background: #334155;
+      top: 2.5rem;
+      left: 0;
+      padding: 0.5rem 0;
+      border-radius: 5px;
+    }
+    nav ul li:hover ul {
+      display: block;
+    }
+    nav ul li ul li {
+      padding: 0.5rem 1rem;
+    }
+    nav ul li ul li a {
+      color: white;
+      display: block;
+    }
+    nav ul li ul li a:hover {
+      color: #0ea5e9;
+    }
+
+    /* Header */
+    header {
       text-align: center;
-      padding: 2rem 1rem;
+      padding: 3rem 1rem;
+      background: linear-gradient(to right, #1e293b, #0f172a);
+      color: white;
     }
     header h1 {
-      font-size: 2.5rem;
-      margin-bottom: 0.5rem;
+      font-size: 2.8rem;
+      margin: 0;
     }
     header p {
       font-size: 1rem;
-      margin: 0.3rem 0;
+      opacity: 0.9;
     }
+
+    /* Sections */
     section {
-      max-width: 900px;
+      max-width: 1000px;
       margin: 2rem auto;
-      padding: 2rem;
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      padding: 0 1rem;
     }
     h2 {
+      font-size: 1.8rem;
       color: #0f172a;
-      border-bottom: 3px solid #0ea5e9;
-      padding-bottom: 0.5rem;
+      border-left: 5px solid #0ea5e9;
+      padding-left: 10px;
       margin-bottom: 1rem;
     }
+
+    /* Skills */
     .skills-icons {
       display: flex;
       flex-wrap: wrap;
-      gap: 1rem;
+      gap: 1.5rem;
       font-size: 2rem;
+      justify-content: center;
     }
     .skills-icons i {
-      transition: transform 0.3s ease;
+      transition: transform 0.3s, color 0.3s;
     }
     .skills-icons i:hover {
       transform: scale(1.2);
       color: #0ea5e9;
     }
+
+    /* Work History */
     .work-item {
-      margin-bottom: 2rem;
+      background: #fff;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      transition: transform 0.3s;
     }
-    ul {
-      padding-left: 1.2rem;
+    .work-item:hover {
+      transform: translateY(-5px);
     }
-    #contact form {
-      display: flex;
-      flex-direction: column;
+
+    /* Why Choose Me */
+    .why-me {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 1rem;
     }
-    #contact input, #contact textarea {
-      padding: 0.8rem;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      font-size: 1rem;
+    .why-card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      text-align: center;
+      transition: 0.3s;
     }
-    #contact button {
-      padding: 0.8rem;
-      background: #0ea5e9;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 1rem;
+    .why-card:hover {
+      transform: scale(1.05);
     }
-    #contact button:hover {
-      background: #0284c7;
+    .why-card i {
+      font-size: 2rem;
+      color: #0ea5e9;
+      margin-bottom: 0.5rem;
     }
+
+    /* Contact */
+    .contact {
+      text-align: center;
+    }
+    .contact a {
+      display: inline-block;
+      margin: 0.5rem;
+      text-decoration: none;
+      color: #1e293b;
+      font-weight: bold;
+    }
+    .contact a:hover {
+      color: #0ea5e9;
+    }
+
+    /* Footer */
     footer {
-      background: #0f172a;
+      background: #1e293b;
       color: white;
       text-align: center;
       padding: 1rem;
       margin-top: 2rem;
     }
-    @media (max-width: 600px) {
-      header h1 {
-        font-size: 2rem;
-      }
-      .skills-icons {
-        justify-content: center;
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      nav ul {
+        flex-direction: column;
+        gap: 1rem;
       }
     }
   </style>
 </head>
 <body>
+
+  <!-- Navigation -->
+  <nav>
+    <ul>
+      <li><a href="#summary">Summary</a></li>
+      <li>
+        <a href="#skills">Skills</a>
+        <ul>
+          <li><a href="#programming">Programming</a></li>
+          <li><a href="#frameworks">Frameworks</a></li>
+          <li><a href="#cloud">Cloud</a></li>
+        </ul>
+      </li>
+      <li><a href="#work">Work</a></li>
+      <li><a href="#why">Why Me?</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- Header -->
   <header>
     <h1>PAVAN KUMAR KR</h1>
     <p>📧 pavankumarkr98@gmail.com | 📞 +91 9945730082 | 📍 Bengaluru, KA 560091</p>
   </header>
 
-  <section data-aos="fade-up">
+  <!-- Summary -->
+  <section id="summary">
     <h2>Professional Summary</h2>
     <p>
-      Experienced Python Developer with 2.6 years of expertise in software development. Skilled in optimizing infrastructure costs,
-      implementing innovative technologies, and driving R&D initiatives. Proficient in developing scalable, high-performance
-      applications and enhancing operational efficiency.
+      Experienced Python Developer with 2.6 years of expertise in software development. Skilled in optimizing 
+      infrastructure costs, implementing innovative technologies, and driving R&D initiatives. 
+      Proficient in developing scalable, high-performance applications and enhancing operational efficiency.
     </p>
   </section>
 
-  <section data-aos="fade-up">
+  <!-- Skills -->
+  <section id="skills">
     <h2>Skills & Technologies</h2>
     <div class="skills-icons">
       <i class="devicon-python-plain colored" title="Python"></i>
@@ -128,31 +237,24 @@
       <i class="devicon-mysql-plain colored" title="SQL"></i>
       <i class="devicon-django-plain colored" title="Django"></i>
       <i class="devicon-dot-net-plain colored" title=".NET"></i>
-      <i class="devicon-tensorflow-original colored" title="TensorFlow"></i>
-      <i class="devicon-numpy-original colored" title="Numpy"></i>
-      <i class="devicon-pandas-original colored" title="Pandas"></i>
-      <i class="devicon-html5-plain colored" title="HTML"></i>
-      <i class="devicon-css3-plain colored" title="CSS"></i>
-      <i class="devicon-bootstrap-plain colored" title="Bootstrap"></i>
-      <i class="devicon-postgresql-plain colored" title="PostgreSQL"></i>
-      <i class="devicon-mongodb-plain colored" title="MongoDB"></i>
-      <i class="devicon-git-plain colored" title="Git"></i>
-      <i class="devicon-github-original colored" title="GitHub"></i>
+      <i class="fa-solid fa-brain" title="AI/ML"></i>
       <i class="devicon-docker-plain colored" title="Docker"></i>
-      <i class="devicon-googlecloud-plain colored" title="GCP"></i>
       <i class="devicon-amazonwebservices-plain colored" title="AWS"></i>
+      <i class="devicon-googlecloud-plain colored" title="GCP"></i>
+      <i class="devicon-azure-plain colored" title="Azure"></i>
     </div>
   </section>
 
-  <section data-aos="fade-up">
+  <!-- Work -->
+  <section id="work">
     <h2>Work History</h2>
     <div class="work-item">
       <h3>Python Developer — Codeland Infosolutions Pvt. Ltd</h3>
       <p><em>Dec 2022 - Present | Bengaluru, India</em></p>
       <ul>
-        <li>Designed and deployed an AI-powered chatbot to streamline communication.</li>
-        <li>Reduced CPU/memory utilization by 30% through performance optimization.</li>
-        <li>Cut server instance costs by 40% via infrastructure tuning.</li>
+        <li>Designed and deployed an AI-powered chatbot to improve user interaction.</li>
+        <li>Optimized performance bottlenecks, reducing CPU/memory utilization by 30%.</li>
+        <li>Cut server instance costs by 40% through infrastructure optimization.</li>
       </ul>
     </div>
     <div class="work-item">
@@ -160,39 +262,52 @@
       <p><em>July 2022 - Dec 2022 | Bengaluru, India</em></p>
       <ul>
         <li>Developed scalable Python applications with strong coding standards.</li>
-        <li>Collaborated on full-stack web development projects.</li>
+        <li>Supported the migration of applications to cloud platforms.</li>
       </ul>
     </div>
   </section>
 
-  <section id="why-me" data-aos="fade-up">
+  <!-- Why Me -->
+  <section id="why">
     <h2>Why Choose Me?</h2>
-    <ul>
-      <li>🚀 Proven track record in optimizing infrastructure and reducing costs</li>
-      <li>🧠 Strong foundation in AI/ML and scalable backend systems</li>
-      <li>🎯 Passionate about clean code, performance, and user experience</li>
-      <li>🤝 Collaborative team player with leadership potential</li>
-    </ul>
+    <div class="why-me">
+      <div class="why-card">
+        <i class="fa-solid fa-lightbulb"></i>
+        <h3>Problem Solver</h3>
+        <p>I design scalable, efficient solutions that reduce costs and improve performance.</p>
+      </div>
+      <div class="why-card">
+        <i class="fa-solid fa-code"></i>
+        <h3>Technical Expertise</h3>
+        <p>Hands-on experience with Python, AI/ML, cloud, and modern frameworks.</p>
+      </div>
+      <div class="why-card">
+        <i class="fa-solid fa-users"></i>
+        <h3>Team Player</h3>
+        <p>Collaborates effectively across teams to deliver impactful results.</p>
+      </div>
+      <div class="why-card">
+        <i class="fa-solid fa-rocket"></i>
+        <h3>Innovator</h3>
+        <p>I bring new ideas and continuous improvements to every project.</p>
+      </div>
+    </div>
   </section>
 
-  <section id="contact" data-aos="fade-up">
-    <h2>Contact Me</h2>
-    <form>
-      <input type="text" name="name" placeholder="Your Name" required />
-      <input type="email" name="email" placeholder="Your Email" required />
-      <textarea name="message" placeholder="Your Message" rows="5" required></textarea>
-      <button type="submit">Send Message</button>
-    </form>
+  <!-- Contact -->
+  <section id="contact" class="contact">
+    <h2>Contact</h2>
+    <p>Let’s build something amazing together!</p>
+    <a href="mailto:pavankumarkr98@gmail.com"><i class="fa-solid fa-envelope"></i> Email</a>
+    <a href="tel:+919945730082"><i class="fa-solid fa-phone"></i> Call</a>
+    <a href="https://github.com/" target="_blank"><i class="fab fa-github"></i> GitHub</a>
+    <a href="https://linkedin.com/" target="_blank"><i class="fab fa-linkedin"></i> LinkedIn</a>
   </section>
 
+  <!-- Footer -->
   <footer>
     <p>© 2025 Pavan Kumar KR</p>
   </footer>
 
-  <!-- AOS Script -->
-  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-  <script>
-    AOS.init();
-  </script>
 </body>
 </html>
