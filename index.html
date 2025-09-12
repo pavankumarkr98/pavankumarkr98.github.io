@@ -1,79 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Pavan Kumar KR - Portfolio</title>
 
   <!-- Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.15.1/devicon.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.15.1/devicon.min.css"/>
 
   <style>
-    /* Reset & Fonts */
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; background: #f9fafb; color: #1e293b; }
+    * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+    body { font-family: 'Segoe UI', sans-serif; background: #f9fafb; color: #1e293b; line-height: 1.6; }
 
     /* Navbar */
     nav { background: #0f172a; padding: 1rem; display: flex; justify-content: center; position: sticky; top: 0; z-index: 1000; }
     nav ul { list-style: none; display: flex; gap: 2rem; }
-    nav ul li { position: relative; }
-    nav a { text-decoration: none; color: white; font-weight: 500; transition: 0.3s; }
-    nav a:hover { color: #0ea5e9; }
-    nav ul li ul { display: none; position: absolute; top: 2.5rem; left: 0; background: #1e293b; border-radius: 6px; }
-    nav ul li:hover ul { display: block; }
-    nav ul li ul li { padding: 0.5rem 1rem; }
+    nav a { text-decoration: none; color: white; font-weight: 500; position: relative; padding-bottom: 4px; }
+    nav a::after { content: ""; position: absolute; left: 0; bottom: 0; width: 0%; height: 2px; background: #0ea5e9; transition: 0.3s; }
+    nav a:hover::after { width: 100%; }
 
     /* Hero */
-    header { 
-      background: linear-gradient(135deg, #0f172a, #1e293b); 
-      color: white; 
-      text-align: center; 
-      padding: 5rem 2rem; 
-    }
-    header h1 { font-size: 3rem; margin-bottom: 0.5rem; }
-    header p { opacity: 0.9; font-size: 1.2rem; }
-    .tagline { margin-top: 1rem; font-weight: 600; font-size: 1.2rem; color: #0ea5e9; }
+    header { background: linear-gradient(135deg, #0f172a, #1e293b); color: white; text-align: center; padding: 6rem 2rem; position: relative; overflow: hidden; }
+    header h1 { font-size: 3rem; margin-bottom: 0.5rem; animation: fadeDown 1s ease; }
+    header p { font-size: 1.2rem; opacity: 0.9; }
+    .tagline { margin-top: 1rem; font-weight: 600; font-size: 1.2rem; color: #0ea5e9; height: 30px; }
+
+    /* Typing animation */
+    .typing { border-right: 3px solid #0ea5e9; white-space: nowrap; overflow: hidden; display: inline-block; animation: typing 4s steps(40, end) infinite alternate, blink 0.75s step-end infinite; }
+    @keyframes typing { from { width: 0; } to { width: 100%; } }
+    @keyframes blink { 50% { border-color: transparent; } }
 
     /* Sections */
     section { max-width: 1100px; margin: 3rem auto; padding: 0 1rem; }
     h2 { border-left: 5px solid #0ea5e9; padding-left: 10px; margin-bottom: 1.5rem; color: #0f172a; }
 
-    /* Skills */
-    .skills-icons { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.5rem; font-size: 2.2rem; }
-    .skills-icons i { transition: transform 0.3s, color 0.3s; }
-    .skills-icons i:hover { transform: scale(1.2); color: #0ea5e9; }
+    /* Skills icons */
+    .skills-icons { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.5rem; font-size: 2rem; }
+    .skills-icons i { transition: transform 0.4s ease, color 0.3s; }
+    .skills-icons i:hover { transform: rotate(15deg) scale(1.3); color: #0ea5e9; }
 
-    /* What I Do */
+    /* Services */
     .services { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; }
-    .service-card { background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); text-align: center; transition: 0.3s; }
-    .service-card:hover { transform: translateY(-5px); }
-    .service-card i { font-size: 2rem; color: #0ea5e9; margin-bottom: 0.5rem; }
+    .service-card { background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 3px 10px rgba(0,0,0,0.1); text-align: center; transition: 0.4s; }
+    .service-card:hover { transform: translateY(-10px) scale(1.03); box-shadow: 0 8px 20px rgba(14,165,233,0.3); }
+    .service-card i { font-size: 2rem; color: #0ea5e9; margin-bottom: 0.5rem; transition: 0.3s; }
+    .service-card:hover i { transform: scale(1.3); }
 
-    /* Work History */
-    .work-item { background: #fff; padding: 1.2rem; margin-bottom: 1rem; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: 0.3s; }
-    .work-item:hover { transform: scale(1.02); }
+    /* Work */
+    .work-item { background: #fff; padding: 1.2rem; margin-bottom: 1rem; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); transition: 0.3s; }
+    .work-item:hover { transform: scale(1.02); background: #f1f5f9; }
+    .work-item ul { margin-top: 0.5rem; padding-left: 1.2rem; }
 
     /* Projects */
     .projects { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
     .project-card { background: white; padding: 1rem; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: 0.3s; }
-    .project-card:hover { transform: translateY(-5px); }
-    .project-card h3 { margin-bottom: 0.5rem; }
-    .project-card p { font-size: 0.9rem; color: #555; }
+    .project-card:hover { transform: translateY(-10px); box-shadow: 0 8px 20px rgba(14,165,233,0.3); }
 
     /* Contact */
     .contact { text-align: center; }
-    .contact a { margin: 0.5rem; text-decoration: none; font-weight: bold; color: #1e293b; }
-    .contact a:hover { color: #0ea5e9; }
+    .contact a { margin: 0.5rem; text-decoration: none; font-weight: bold; color: #1e293b; transition: 0.3s; }
+    .contact a:hover { color: #0ea5e9; transform: scale(1.1); display: inline-block; }
 
     /* Footer */
     footer { background: #0f172a; color: white; text-align: center; padding: 1rem; margin-top: 3rem; }
 
-    /* Responsive */
-    @media (max-width: 768px) {
-      header h1 { font-size: 2.2rem; }
-      nav ul { flex-direction: column; gap: 1rem; }
-    }
+    /* Animations */
+    @keyframes fadeDown { from { opacity: 0; transform: translateY(-20px);} to { opacity: 1; transform: translateY(0);} }
   </style>
 </head>
 <body>
@@ -93,36 +86,43 @@
   <!-- Hero -->
   <header>
     <h1>Pavan Kumar KR</h1>
-    <p>AI/ML Engineer | Full-Stack Developer | Cloud & Prompt Engineer</p>
-    <p class="tagline">🚀 Building intelligent, scalable, and future-ready solutions</p>
+    <p class="typing">Full-Stack Developer | Cloud Engineer | AI/ML Specialist</p>
+    <p class="tagline">🚀 Turning business scenarios into scalable, intelligent solutions</p>
   </header>
 
   <!-- Summary -->
   <section id="summary">
     <h2>Professional Summary</h2>
     <p>
-      I am a highly skilled Python & Full-Stack Developer with <b>3+ years of experience</b> specializing in 
-      <b>AI/ML, cloud platforms, and modern application development</b>. I have delivered 
-      multiple end-to-end projects involving machine learning models, full-stack web applications, 
-      cloud-native solutions, and prompt engineering for LLMs. 
-      Passionate about innovation, scalability, and real-world problem-solving.
+      I am a <b>Full-Stack and Cloud Engineer</b> with <b>3+ years of experience</b> in building 
+      scalable web applications, cloud-native systems, and AI/ML-driven solutions. 
+      Skilled at <b>architecture-level design</b> and <b>discussing technical strategies with CEOs and stakeholders</b>.  
+      Strong in <b>problem-solving</b>, <b>understanding business scenarios</b>, and translating them into 
+      <b>high-value technical solutions</b>.
     </p>
   </section>
 
   <!-- Skills -->
   <section id="skills">
-    <h2>Skills & Technologies</h2>
+    <h2>Technical Skills</h2>
     <div class="skills-icons">
       <i class="devicon-python-plain colored" title="Python"></i>
-      <i class="devicon-javascript-plain colored" title="JavaScript"></i>
+      <i class="devicon-java-plain colored" title="Java"></i>
+      <i class="devicon-csharp-plain colored" title="C#"></i>
+      <i class="devicon-r-original colored" title="R"></i>
       <i class="devicon-react-original colored" title="React"></i>
+      <i class="devicon-tailwindcss-original colored" title="TailwindCSS"></i>
+      <i class="devicon-bootstrap-plain colored" title="Bootstrap"></i>
+      <i class="devicon-jquery-plain colored" title="jQuery"></i>
       <i class="devicon-django-plain colored" title="Django"></i>
       <i class="devicon-nodejs-plain colored" title="Node.js"></i>
-      <i class="devicon-docker-plain colored" title="Docker"></i>
       <i class="devicon-amazonwebservices-plain colored" title="AWS"></i>
       <i class="devicon-googlecloud-plain colored" title="GCP"></i>
       <i class="devicon-azure-plain colored" title="Azure"></i>
-      <i class="fa-solid fa-brain" title="AI/ML"></i>
+      <i class="devicon-mongodb-plain colored" title="MongoDB"></i>
+      <i class="devicon-postgresql-plain colored" title="PostgreSQL"></i>
+      <i class="devicon-mysql-plain colored" title="MySQL"></i>
+      <i class="devicon-docker-plain colored" title="Docker"></i>
     </div>
   </section>
 
@@ -133,44 +133,47 @@
       <div class="service-card">
         <i class="fa-solid fa-brain"></i>
         <h3>AI & ML Solutions</h3>
-        <p>Develop intelligent ML models, chatbots, and predictive systems using TensorFlow, Scikit-learn, and NLP.</p>
+        <p>Deliver intelligent systems using NLP, deep learning, and predictive modeling to solve real-world problems.</p>
       </div>
       <div class="service-card">
         <i class="fa-solid fa-code"></i>
         <h3>Full-Stack Development</h3>
-        <p>Build scalable web apps using Django, React, Node.js, and modern front-end frameworks.</p>
+        <p>Build scalable web apps with React, Django, Node.js, and modern UI frameworks.</p>
       </div>
       <div class="service-card">
         <i class="fa-solid fa-cloud"></i>
         <h3>Cloud Engineering</h3>
-        <p>Design and deploy cloud-native solutions on AWS, GCP, and Azure with cost-optimized infrastructure.</p>
+        <p>Deploy cost-optimized, multi-cloud solutions across AWS, GCP, Azure, and DigitalOcean.</p>
       </div>
       <div class="service-card">
         <i class="fa-solid fa-keyboard"></i>
         <h3>Prompt Engineering</h3>
-        <p>Optimize and fine-tune LLM prompts to maximize efficiency and improve AI-driven solutions.</p>
+        <p>Design optimized prompts and workflows to maximize LLM and generative AI capabilities.</p>
       </div>
     </div>
   </section>
 
-  <!-- Work Experience -->
+  <!-- Work -->
   <section id="work">
     <h2>Experience</h2>
     <div class="work-item">
-      <h3>Python Developer — Codeland Infosolutions Pvt. Ltd</h3>
-      <p><em>Dec 2022 - Present | Bengaluru, India</em></p>
+      <h3>Full-Stack & Cloud Engineer — Codeland Infosolutions Pvt. Ltd</h3>
       <ul>
-        <li>Delivered AI-powered chatbots and NLP-driven apps for enterprise clients.</li>
-        <li>Reduced infrastructure costs by 40% using cloud optimization strategies.</li>
-        <li>Deployed scalable full-stack applications with high-performance APIs.</li>
+        <li>Led <b>full-stack projects</b> with React, Django, Node.js ensuring high performance and scalability.</li>
+        <li>Designed and deployed solutions across <b>AWS, Google Cloud, Azure, DigitalOcean, and Oracle Cloud</b>.</li>
+        <li>Worked closely with <b>CEOs and stakeholders</b> to align technology with business strategy.</li>
+        <li>Delivered <b>AI/ML-driven automation</b> that improved efficiency by 40%.</li>
+        <li>Architected enterprise systems translating <b>business needs</b> into scalable technical solutions.</li>
       </ul>
     </div>
+
     <div class="work-item">
-      <h3>Junior Python Developer — Codeland Infosolutions Pvt. Ltd</h3>
-      <p><em>July 2022 - Dec 2022 | Bengaluru, India</em></p>
+      <h3>Software Developer — Codeland Infosolutions Pvt. Ltd</h3>
       <ul>
-        <li>Developed Python-based backends and supported ML model deployment.</li>
-        <li>Contributed to cloud migration of enterprise applications.</li>
+        <li>Developed Python, Java, and C# backend services with robust coding standards.</li>
+        <li>Integrated <b>databases</b> like PostgreSQL, MongoDB, SQL Server, and MySQL.</li>
+        <li>Built responsive interfaces with <b>React, Bootstrap, TailwindCSS, and jQuery</b>.</li>
+        <li>Supported cloud migration initiatives to <b>AWS and GCP</b>.</li>
       </ul>
     </div>
   </section>
@@ -181,15 +184,15 @@
     <div class="projects">
       <div class="project-card">
         <h3>AI Chatbot</h3>
-        <p>Developed a chatbot using NLP and deep learning that improved customer support efficiency by 60%.</p>
+        <p>Designed an NLP-based chatbot that reduced customer support workload by 60% and increased engagement.</p>
       </div>
       <div class="project-card">
         <h3>Cloud Cost Optimizer</h3>
-        <p>Designed and deployed a system that reduced cloud infrastructure costs by 40% across multi-cloud environments.</p>
+        <p>Built a system that reduced cloud spend by 40% across multi-cloud environments (AWS, GCP, Azure).</p>
       </div>
       <div class="project-card">
-        <h3>Full-Stack Analytics Platform</h3>
-        <p>Built a data analytics dashboard with Django, React, and PostgreSQL for real-time business intelligence.</p>
+        <h3>Analytics Platform</h3>
+        <p>Developed a full-stack analytics dashboard using Django, React, and PostgreSQL for real-time insights.</p>
       </div>
     </div>
   </section>
@@ -197,7 +200,7 @@
   <!-- Contact -->
   <section id="contact" class="contact">
     <h2>Contact</h2>
-    <p>Let’s collaborate and build impactful solutions together!</p>
+    <p>Let’s connect and build impactful solutions!</p>
     <a href="mailto:pavankumarkr98@gmail.com"><i class="fa-solid fa-envelope"></i> Email</a>
     <a href="tel:+919945730082"><i class="fa-solid fa-phone"></i> Call</a>
     <a href="https://github.com/" target="_blank"><i class="fab fa-github"></i> GitHub</a>
