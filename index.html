@@ -1,196 +1,574 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Pavan Kumar KR - Portfolio</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Pavan Kumar KR — Portfolio (with Search)</title>
 
   <!-- Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.15.1/devicon.min.css"/>
 
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
-    body { font-family: 'Segoe UI', sans-serif; background: #f9fafb; color: #1e293b; line-height: 1.6; }
+    /* ---------- Basic layout & theme ---------- */
+    * { box-sizing: border-box; }
+    html,body { height:100%; }
+    body {
+      margin:0;
+      font-family: Inter, "Segoe UI", Roboto, system-ui, -apple-system, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg,#f6f9fc 0%, #eef6fb 100%);
+      color:#0f172a;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
 
-    /* Navbar */
-    nav { background: #0f172a; padding: 1rem; display: flex; justify-content: center; position: sticky; top: 0; z-index: 1000; }
-    nav ul { list-style: none; display: flex; gap: 2rem; }
-    nav a { text-decoration: none; color: white; font-weight: 500; position: relative; padding-bottom: 4px; }
-    nav a::after { content: ""; position: absolute; left: 0; bottom: 0; width: 0%; height: 2px; background: #0ea5e9; transition: 0.3s; }
-    nav a:hover::after { width: 100%; }
+    /* ---------- Navbar ---------- */
+    nav {
+      position:sticky; top:0; z-index:1200;
+      display:flex; align-items:center; justify-content:space-between;
+      padding:12px 20px; gap:16px;
+      background: rgba(15,23,42,0.96);
+      backdrop-filter: blur(6px);
+      box-shadow: 0 6px 18px rgba(12,18,32,0.12);
+    }
+    .brand { display:flex; align-items:center; gap:12px; color:#fff; font-weight:700; text-decoration:none; }
+    .brand .logo {
+      width:44px; height:44px; display:inline-grid; place-items:center; border-radius:8px;
+      background: linear-gradient(135deg,#06b6d4,#1e3a8a); color:white; font-weight:700;
+    }
 
-    /* Hero */
-    header { background: linear-gradient(135deg, #0f172a, #1e293b); color: white; text-align: center; padding: 6rem 2rem; position: relative; }
-    header h1 { font-size: 3rem; margin-bottom: 0.5rem; }
-    .typing { border-right: 3px solid #0ea5e9; white-space: nowrap; overflow: hidden; display: inline-block; animation: typing 6s steps(50, end) infinite alternate, blink 0.75s step-end infinite; }
-    @keyframes typing { from { width: 0; } to { width: 100%; } }
-    @keyframes blink { 50% { border-color: transparent; } }
-    .tagline { margin-top: 1rem; font-weight: 600; font-size: 1.2rem; color: #0ea5e9; }
+    /* ---------- Search UI ---------- */
+    .search-wrap {
+      flex:1; display:flex; justify-content:center;
+    }
+    .search {
+      width:100%; max-width:980px; position:relative;
+      display:flex; gap:8px; align-items:center;
+    }
+    .search input[type="search"] {
+      width:100%; padding:12px 44px 12px 16px; border-radius:10px;
+      border:1px solid rgba(15,23,42,0.08); box-shadow: 0 6px 18px rgba(17,24,39,0.04);
+      outline:none; font-size:15px; transition:box-shadow .18s, border-color .18s;
+      background: rgba(255,255,255,0.92);
+    }
+    .search input[type="search"]:focus {
+      box-shadow:0 8px 24px rgba(14,165,233,0.14);
+      border-color:#0ea5e9;
+    }
+    .search .icons {
+      position:absolute; right:8px; display:flex; gap:8px; align-items:center; top:6px;
+    }
+    .chip { background:#eef2ff; color:#1e3a8a; padding:6px 10px; border-radius:999px; font-size:13px; display:inline-flex; gap:8px; align-items:center; }
 
-    /* Sections */
-    section { max-width: 1100px; margin: 3rem auto; padding: 0 1rem; }
-    h2 { border-left: 5px solid #0ea5e9; padding-left: 10px; margin-bottom: 1.5rem; color: #0f172a; }
+    /* mode toggle */
+    .mode-toggle { display:flex; gap:6px; align-items:center; }
+    .mode-toggle button {
+      background:transparent; border:1px solid rgba(255,255,255,0.06); color:#fff; padding:6px 10px; border-radius:8px; cursor:pointer;
+    }
+    .mode-toggle .active { background:#0ea5e9; color:#023047; font-weight:700; border: none; }
 
-    /* Skills icons */
-    .skills-icons { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.5rem; font-size: 2rem; }
-    .skills-icons i { transition: transform 0.4s ease, color 0.3s; }
-    .skills-icons i:hover { transform: rotate(15deg) scale(1.3); color: #0ea5e9; }
+    /* suggestions dropdown */
+    .suggestions {
+      position:absolute; left:0; right:0; top:56px; background:white; border-radius:10px; 
+      box-shadow: 0 12px 36px rgba(12,18,32,0.12);
+      max-height:340px; overflow:auto; padding:8px; display:none;
+    }
+    .suggestions.visible { display:block; }
+    .suggestion-item { padding:10px 12px; border-radius:8px; display:flex; gap:10px; align-items:center; cursor:pointer; transition:background .12s; }
+    .suggestion-item:hover, .suggestion-item.active { background:#f1f5f9; }
+    .suggestion-item .meta { font-size:13px; color:#475569; }
+    .suggestion-item .title { font-weight:600; color:#0f172a; }
 
-    /* Cards (services, projects, etc.) */
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; }
-    .card { background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 3px 10px rgba(0,0,0,0.1); transition: 0.4s; }
-    .card:hover { transform: translateY(-10px) scale(1.03); box-shadow: 0 8px 20px rgba(14,165,233,0.3); }
-    .card i { font-size: 2rem; color: #0ea5e9; margin-bottom: 0.5rem; display: block; }
+    /* ---------- Main content layout ---------- */
+    .container { max-width:1100px; margin:28px auto; padding:0 18px; }
+    header.hero {
+      background: linear-gradient(135deg,#0f172a,#1e293b);
+      color:white; padding:42px; border-radius:12px;
+      display:flex; gap:24px; align-items:center; justify-content:space-between;
+      box-shadow: 0 14px 40px rgba(2,6,23,0.18);
+    }
+    .hero-left { max-width:64%; }
+    .hero-left h1 { font-size:28px; margin-bottom:6px; letter-spacing:-0.5px; }
+    .hero-left p { margin:8px 0 0; opacity:0.9; }
+    .hero-actions { margin-top:16px; display:flex; gap:10px; align-items:center; }
 
-    /* Work */
-    .work-item { background: #fff; padding: 1.2rem; margin-bottom: 1rem; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); transition: 0.3s; }
-    .work-item:hover { transform: scale(1.02); background: #f1f5f9; }
-    .work-item ul { margin-top: 0.5rem; padding-left: 1.2rem; }
+    /* small features */
+    .features { display:flex; gap:12px; margin-top:10px; flex-wrap:wrap; }
+    .feature { background:rgba(255,255,255,0.06); color:#e6eefc; padding:8px 10px; border-radius:8px; font-size:13px; }
 
-    /* Contact */
-    .contact { text-align: center; }
-    .contact a { margin: 0.5rem; text-decoration: none; font-weight: bold; color: #1e293b; transition: 0.3s; }
-    .contact a:hover { color: #0ea5e9; transform: scale(1.1); display: inline-block; }
-    .btn { background: #0ea5e9; color: white; padding: 0.6rem 1.2rem; border-radius: 5px; text-decoration: none; transition: 0.3s; }
-    .btn:hover { background: #0284c7; }
+    /* results area */
+    .search-results { margin-top:22px; display:grid; grid-template-columns: 1fr 320px; gap:18px; align-items:start; }
+    .results { background:linear-gradient(180deg,#ffffff,#fbfdff); padding:14px; border-radius:12px; box-shadow:0 10px 30px rgba(12,18,32,0.06) }
+    .sidebar { background:#fff; padding:14px; border-radius:12px; box-shadow:0 6px 18px rgba(12,18,32,0.06); height:fit-content; }
 
-    /* Footer */
-    footer { background: #0f172a; color: white; text-align: center; padding: 1rem; margin-top: 3rem; }
+    /* result card */
+    .result-card { display:flex; gap:12px; padding:12px; border-radius:10px; border:1px solid rgba(15,23,42,0.04); margin-bottom:10px; transition:transform .15s, box-shadow .15s; background:white; }
+    .result-card:hover { transform:translateY(-6px); box-shadow:0 14px 40px rgba(2,6,23,0.06); }
+    .result-card .meta { font-size:12px; color:#64748b; }
+    .result-card .title { font-weight:700; color:#0f172a; }
+    .result-card .desc { color:#334155; margin-top:6px; font-size:14px; }
+
+    /* highlight */
+    .hl { background: linear-gradient(90deg,#fffbdd,#ffeaa7); padding:0 4px; border-radius:3px; }
+
+    /* loader */
+    .loader { width:20px; height:20px; border-radius:50%; border:3px solid rgba(0,0,0,0.08); border-top-color:#0ea5e9; animation:spin .9s linear infinite; }
+    @keyframes spin { to { transform:rotate(360deg);} }
+
+    /* voice button */
+    .voice-btn { background:#fff; border-radius:8px; padding:8px; display:inline-flex; align-items:center; justify-content:center; box-shadow:0 6px 18px rgba(12,18,32,0.06); cursor:pointer; }
+
+    /* modal */
+    .modal { position:fixed; inset:0; display:none; align-items:center; justify-content:center; z-index:1400; background:rgba(2,6,23,0.45); }
+    .modal.open { display:flex; }
+    .modal-card { width:min(900px,94%); background:#fff; border-radius:12px; padding:20px; box-shadow:0 24px 60px rgba(2,6,23,0.28); }
+
+    /* footer small */
+    footer { margin:36px 0 80px; text-align:center; color:#475569; font-size:14px; }
+
+    /* responsive */
+    @media (max-width:1024px) {
+      .search-results { grid-template-columns: 1fr; }
+      .hero-left { max-width:100%; }
+    }
   </style>
 </head>
 <body>
 
-  <!-- Navbar -->
+  <!-- NAV -->
   <nav>
-    <ul>
-      <li><a href="#summary">Summary</a></li>
-      <li><a href="#skills">Skills</a></li>
-      <li><a href="#services">What I Do</a></li>
-      <li><a href="#whyme">Why Me</a></li>
-      <li><a href="#work">Experience</a></li>
-      <li><a href="#projects">Projects</a></li>
-      <li><a href="#contact">Contact</a></li>
-    </ul>
+    <a class="brand" href="#summary">
+      <span class="logo">PK</span>
+      <span>Pavan Kumar KR</span>
+    </a>
+
+    <div class="search-wrap" style="max-width:1100px;">
+      <div class="search" role="search" aria-label="Site search">
+        <input id="query" type="search" placeholder="Search projects, skills, articles...  (press / )" aria-label="Search" autocomplete="off" />
+        <div class="icons">
+          <div class="chip" style="display:none" id="modeChip">Solr</div>
+          <button id="voiceBtn" title="Voice search" class="voice-btn" aria-label="Voice search"><i class="fa-solid fa-microphone"></i></button>
+          <div id="loader" style="display:none" class="loader" aria-hidden="true"></div>
+        </div>
+
+        <div id="suggestions" class="suggestions" role="listbox" aria-label="Search suggestions"></div>
+      </div>
+    </div>
+
+    <div class="mode-toggle" style="margin-left:14px">
+      <button id="solrBtn" class="active" title="Keyword & facet search (Solr)" aria-pressed="true">Solr</button>
+      <button id="weaviateBtn" title="Semantic search (Weaviate)">Semantic</button>
+    </div>
   </nav>
 
-  <!-- Hero -->
-  <header>
-    <h1>Pavan Kumar KR</h1>
-    <p class="typing">Full-Stack & Cloud Engineer | AI/ML Specialist | Prompt Developer</p>
-    <p class="tagline">🚀 Turning business scenarios into scalable, intelligent solutions</p>
-  </header>
+  <!-- MAIN -->
+  <div class="container">
+    <!-- HERO -->
+    <header class="hero" id="summary">
+      <div class="hero-left">
+        <h1>Full-Stack & Cloud Engineer — AI/ML Specialist</h1>
+        <p>3+ years delivering cloud-native, AI-powered, and enterprise-grade systems. I design architecture, reduce costs, and translate business needs into high-value technical solutions.</p>
 
-  <!-- Summary -->
-  <section id="summary">
-    <h2>Professional Summary</h2>
-    <p>
-      I am a results-driven <b>Full-Stack and Cloud Engineer</b> with <b>3+ years of experience</b> delivering 
-      intelligent, scalable solutions across multiple domains. My expertise spans <b>AI/ML systems, 
-      cloud-native architectures, and enterprise full-stack development</b>.  
-      Skilled at <b>translating complex business scenarios into technical strategies</b>, 
-      I collaborate with <b>CXOs and stakeholders</b> to design solutions that balance 
-      <b>innovation, cost optimization, and long-term scalability</b>.  
-      Passionate about <b>problem-solving, automation, and emerging technologies</b> that drive measurable business value.
-    </p>
-  </section>
+        <div class="hero-actions">
+          <a class="chip" href="#projects"><i class="fa-solid fa-rocket"></i> View Projects</a>
+          <a class="chip" href="#contact"><i class="fa-solid fa-envelope"></i> Contact</a>
+          <div class="features">
+            <div class="feature"><i class="fa-solid fa-cloud"></i> AWS · GCP · Azure</div>
+            <div class="feature"><i class="fa-solid fa-brain"></i> AI & NLP</div>
+            <div class="feature"><i class="fa-solid fa-code"></i> React · Django · Node</div>
+          </div>
+        </div>
+      </div>
+      <div style="min-width:220px; text-align:right; color:rgba(255,255,255,0.92)">
+        <div style="font-weight:700; font-size:20px">Pavan Kumar KR</div>
+        <div style="opacity:0.95; margin-top:6px">Bengaluru, IN · pavankumarkr98@gmail.com</div>
+      </div>
+    </header>
 
-  <!-- Skills -->
-  <section id="skills">
-    <h2>Technical Skills</h2>
-    <div class="skills-icons">
-      <i class="devicon-python-plain colored" title="Python"></i>
-      <i class="devicon-java-plain colored" title="Java"></i>
-      <i class="devicon-csharp-plain colored" title="C#"></i>
-      <i class="devicon-r-original colored" title="R"></i>
-      <i class="devicon-react-original colored" title="React"></i>
-      <i class="devicon-tailwindcss-original colored" title="TailwindCSS"></i>
-      <i class="devicon-bootstrap-plain colored" title="Bootstrap"></i>
-      <i class="devicon-jquery-plain colored" title="jQuery"></i>
-      <i class="devicon-django-plain colored" title="Django"></i>
-      <i class="devicon-nodejs-plain colored" title="Node.js"></i>
-      <i class="devicon-amazonwebservices-plain colored" title="AWS"></i>
-      <i class="devicon-googlecloud-plain colored" title="GCP"></i>
-      <i class="devicon-azure-plain colored" title="Azure"></i>
-      <i class="devicon-mongodb-plain colored" title="MongoDB"></i>
-      <i class="devicon-postgresql-plain colored" title="PostgreSQL"></i>
-      <i class="devicon-mysql-plain colored" title="MySQL"></i>
-      <i class="devicon-docker-plain colored" title="Docker"></i>
+    <!-- SEARCH RESULTS -->
+    <div class="search-results" aria-live="polite">
+      <div class="results" id="resultsContainer">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px">
+          <strong id="resultsCount">Popular</strong>
+          <small id="resultsNote" style="color:#64748b">Showing sample/demo data — connect to Solr or Weaviate for real results.</small>
+        </div>
+
+        <div id="resultsList">
+          <!-- dynamic result cards inserted here -->
+        </div>
+
+        <div id="emptyState" style="display:none; padding:20px; text-align:center; color:#64748b;">
+          <div style="font-size:18px; margin-bottom:8px">No results found</div>
+          <div>Try different keywords or switch to <b>Semantic</b> mode for broader matches.</div>
+        </div>
+      </div>
+
+      <aside class="sidebar" id="sidebar">
+        <h4 style="margin-top:0">Filters</h4>
+
+        <div style="margin-bottom:12px">
+          <label><input type="checkbox" class="facet" data-facet="project" checked/> Projects</label><br/>
+          <label><input type="checkbox" class="facet" data-facet="doc" checked/> Docs</label><br/>
+          <label><input type="checkbox" class="facet" data-facet="blog" checked/> Blog</label>
+        </div>
+
+        <div>
+          <strong>Tags</strong>
+          <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;">
+            <button class="tag-btn" data-tag="AI">AI</button>
+            <button class="tag-btn" data-tag="Cloud">Cloud</button>
+            <button class="tag-btn" data-tag="NLP">NLP</button>
+            <button class="tag-btn" data-tag="FullStack">FullStack</button>
+            <button class="tag-btn" data-tag="DevOps">DevOps</button>
+          </div>
+        </div>
+
+      </aside>
     </div>
-  </section>
 
-  <!-- What I Do -->
-  <section id="services">
-    <h2>What I Do</h2>
-    <div class="grid">
-      <div class="card"><i class="fa-solid fa-brain"></i><h3>AI & ML Solutions</h3><p>Deliver intelligent systems using NLP, deep learning, and predictive modeling to solve real-world problems.</p></div>
-      <div class="card"><i class="fa-solid fa-code"></i><h3>Full-Stack Development</h3><p>Build scalable web apps with React, Django, Node.js, and modern UI frameworks.</p></div>
-      <div class="card"><i class="fa-solid fa-cloud"></i><h3>Cloud Engineering</h3><p>Deploy cost-optimized, multi-cloud solutions across AWS, GCP, Azure, and DigitalOcean.</p></div>
-      <div class="card"><i class="fa-solid fa-keyboard"></i><h3>Prompt Engineering</h3><p>Design optimized prompts and workflows to maximize LLM and generative AI capabilities.</p></div>
+    <!-- Projects section for completeness -->
+    <section id="projects" style="margin-top:28px">
+      <h2>Key Projects</h2>
+      <div class="grid" id="projectGrid">
+        <!-- cards pre-populated for demo -->
+      </div>
+    </section>
+
+    <!-- contact -->
+    <section id="contact" style="margin-top:30px">
+      <h2>Contact</h2>
+      <p>Interested in collaborating? Email me at <a href="mailto:pavankumarkr98@gmail.com">pavankumarkr98@gmail.com</a> or call <a href="tel:+919945730082">+91 99457 30082</a>.</p>
+    </section>
+
+    <footer>
+      © 2025 Pavan Kumar KR · Built with interactive search (Solr + Weaviate ready)
+    </footer>
+  </div>
+
+  <!-- Modal for details -->
+  <div id="modal" class="modal" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:16px;">
+        <h3 id="modalTitle">Item</h3>
+        <button id="closeModal" aria-label="Close" style="background:#ef4444;color:white;border:none;padding:8px 10px;border-radius:8px;cursor:pointer"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <p id="modalBody" style="color:#334155; margin-top:10px"></p>
+      <div id="modalMeta" style="margin-top:12px; color:#64748b"></div>
     </div>
-  </section>
+  </div>
 
-  <!-- Why Me -->
-  <section id="whyme">
-    <h2>Why Work With Me?</h2>
-    <ul>
-      <li>✅ Proven track record of building <b>scalable full-stack applications</b>.</li>
-      <li>✅ Strong expertise in <b>multi-cloud engineering</b> (AWS, GCP, Azure, DigitalOcean).</li>
-      <li>✅ Ability to <b>bridge business needs with technical execution</b> through architecture-level thinking.</li>
-      <li>✅ Skilled in <b>AI/ML, automation, and prompt engineering</b> for innovative solutions.</li>
-      <li>✅ Experience working directly with <b>CXOs, product owners, and technical teams</b>.</li>
-    </ul>
-  </section>
+  <script>
+    /****************************************************************
+     * Interactive Search Frontend (Solr + Weaviate ready)
+     *
+     * - This JS provides a rich UI and demo/fallback data.
+     * - To connect real backends:
+     *   - Implement server endpoints:
+     *       POST /api/solr-search  { q, filters, page }
+     *       POST /api/weaviate-search { query, topK, filters }
+     *   - Or allow direct browser CORS to your Solr/Weaviate with proper auth.
+     *
+     * Solr example (server-side):
+     *  curl 'http://localhost:8983/solr/collection/select?q=chatbot&wt=json&rows=10'
+     *
+     * Weaviate example (semantic search via vector):
+     *  POST /v1/graphql or /v1/objects and use /v1/vectorizer or client SDKs (weaviate expects auth & CORS).
+     *
+     ****************************************************************/
 
-  <!-- Work -->
-  <section id="work">
-    <h2>Experience</h2>
-    <div class="work-item">
-      <h3>Full-Stack & Cloud Engineer — Codeland Infosolutions Pvt. Ltd</h3>
-      <ul>
-        <li>Architected <b>enterprise-grade full-stack applications</b> with React, Django, Node.js, improving performance and scalability.</li>
-        <li>Deployed and optimized workloads across <b>AWS, Google Cloud, Azure, DigitalOcean, and Oracle Cloud</b>, cutting costs by <b>40%</b>.</li>
-        <li>Delivered <b>AI/ML automation systems</b> that increased efficiency by <b>30%</b>.</li>
-        <li>Collaborated with <b>CXOs and stakeholders</b> to align technology with business strategy.</li>
-        <li>Implemented <b>CI/CD pipelines</b> with Docker, Jenkins, and GitLab, reducing release cycles by <b>50%</b>.</li>
-      </ul>
-    </div>
-    <div class="work-item">
-      <h3>Software Developer — Codeland Infosolutions Pvt. Ltd</h3>
-      <ul>
-        <li>Developed backend services in <b>Python, Java, and C#</b> ensuring modular and maintainable code.</li>
-        <li>Integrated <b>databases</b> like PostgreSQL, MongoDB, SQL Server, and MySQL.</li>
-        <li>Built responsive UIs with <b>React, Bootstrap, TailwindCSS, and jQuery</b>.</li>
-        <li>Supported <b>cloud migration projects</b> enabling seamless transition to AWS and GCP.</li>
-      </ul>
-    </div>
-  </section>
+    // ---------- Demo data (fallback) ----------
+    const DEMO_DOCS = [
+      { id:'p1', type:'project', title:'AI Chatbot (NLP)', tags:['AI','NLP','FullStack'], desc:'Built multilingual chatbot using Transformer models & custom embeddings. Reduced support load by 60%.', score:0.98 },
+      { id:'p2', type:'project', title:'Cloud Cost Optimizer', tags:['Cloud','DevOps'], desc:'Multi-cloud monitoring & rightsizing platform. Saved $150K/yr using autoscaling & spot strategies.', score:0.92 },
+      { id:'p3', type:'project', title:'Real-Time Analytics Dashboard', tags:['FullStack','Cloud'], desc:'Django + React dashboard for streaming metrics and BI; improved decision speed by 45%.', score:0.90 },
+      { id:'d1', type:'doc', title:'Prompt Engineering Guide', tags:['AI'], desc:'Best practices for crafting prompts, few-shot examples and LLM guardrails.', score:0.85 },
+      { id:'b1', type:'blog', title:'Scaling Python Microservices', tags:['DevOps','Cloud'], desc:'Patterns to design resilient & observable microservices on Kubernetes.', score:0.82 },
+    ];
 
-  <!-- Projects -->
-  <section id="projects">
-    <h2>Key Projects</h2>
-    <div class="grid">
-      <div class="card"><h3>AI Chatbot</h3><p>Designed an NLP-based chatbot that reduced support workload by <b>60%</b> and increased engagement.</p></div>
-      <div class="card"><h3>Cloud Cost Optimizer</h3><p>Built a system that reduced cloud spend by <b>$150K+ annually</b> across AWS, GCP, and Azure.</p></div>
-      <div class="card"><h3>Real-Time Analytics Dashboard</h3><p>Developed a full-stack analytics platform using Django, React, and PostgreSQL, accelerating decision-making by <b>45%</b>.</p></div>
-    </div>
-  </section>
+    // ---------- UI refs ----------
+    const queryInput = document.getElementById('query');
+    const suggestionsEl = document.getElementById('suggestions');
+    const resultsList = document.getElementById('resultsList');
+    const resultsCount = document.getElementById('resultsCount');
+    const resultsNote = document.getElementById('resultsNote');
+    const loader = document.getElementById('loader');
+    const solrBtn = document.getElementById('solrBtn');
+    const weaviateBtn = document.getElementById('weaviateBtn');
+    const modeChip = document.getElementById('modeChip');
+    const voiceBtn = document.getElementById('voiceBtn');
+    const emptyState = document.getElementById('emptyState');
+    const projectGrid = document.getElementById('projectGrid');
 
-  <!-- Contact -->
-  <section id="contact" class="contact">
-    <h2>Contact</h2>
-    <p>Let’s connect and build impactful solutions!</p>
-    <a href="mailto:pavankumarkr98@gmail.com"><i class="fa-solid fa-envelope"></i> Email</a>
-    <a href="tel:+919945730082"><i class="fa-solid fa-phone"></i> Call</a>
-    <a href="https://github.com/" target="_blank"><i class="fab fa-github"></i> GitHub</a>
-    <a href="https://linkedin.com/" target="_blank"><i class="fab fa-linkedin"></i> LinkedIn</a><br><br>
-    <a href="resume.pdf" class="btn" download><i class="fa-solid fa-download"></i> Download Resume</a>
-  </section>
+    let searchMode = 'solr'; // solr or weaviate
+    modeChip.textContent = 'Solr';
 
-  <!-- Footer -->
-  <footer>
-    <p>© 2025 Pavan Kumar KR | Portfolio</p>
-  </footer>
+    // show demo project grid
+    function renderProjectGrid() {
+      projectGrid.innerHTML = '';
+      DEMO_DOCS.filter(d => d.type === 'project').forEach(d => {
+        const el = document.createElement('div');
+        el.className = 'card';
+        el.innerHTML = `<h3>${escapeHtml(d.title)}</h3><p style="color:#475569">${escapeHtml(d.desc)}</p>
+                        <div style="margin-top:8px"><small class="meta">Tags: ${d.tags.join(', ')}</small></div>`;
+        projectGrid.appendChild(el);
+      });
+    }
+    renderProjectGrid();
 
+    // ---------- helpers ----------
+    function escapeHtml(s='') { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+    function showLoader(show) { loader.style.display = show ? 'inline-block' : 'none'; }
+    function showSuggestions(list) {
+      if(!list || list.length===0) { suggestionsEl.classList.remove('visible'); suggestionsEl.innerHTML=''; return; }
+      suggestionsEl.classList.add('visible');
+      suggestionsEl.innerHTML = list.map((it,idx) => `
+        <div class="suggestion-item" data-idx="${idx}" tabindex="0" role="option">
+          <div style="width:8px;height:8px;border-radius:2px;background:#0ea5e9;margin-right:8px"></div>
+          <div style="flex:1">
+            <div class="title">${escapeHtml(it.title)}</div>
+            <div class="meta">${escapeHtml(it.type)} · ${escapeHtml(it.tags.join(', '))}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function highlightText(text, q) {
+      if(!q) return escapeHtml(text);
+      const re = new RegExp('('+escapeRegExp(q)+')','ig');
+      return escapeHtml(text).replace(re, '<span class="hl">$1</span>');
+    }
+    function escapeRegExp(s){ return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'); }
+
+    // ---------- search (debounced) ----------
+    let debounceTimer = null;
+    function debounceSearch(q) {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(()=> performSearch(q), 220);
+    }
+
+    // Simulated/fallback search using DEMO_DOCS OR actual backend if provided
+    async function performSearch(q) {
+      if(!q || q.trim().length===0) {
+        // show popular/demo items
+        resultsCount.textContent = 'Popular';
+        resultsNote.textContent = 'Showing demo items — connect Solr/Weaviate for production results.';
+        renderResults(DEMO_DOCS);
+        return;
+      }
+
+      showLoader(true);
+      // If developer supplied backend endpoints, this is where you'd call them.
+      // Example: call /api/solr-search or /api/weaviate-search
+      try {
+        if(searchMode === 'solr') {
+          // Demo: simple keyword match on title/desc
+          const res = DEMO_DOCS.filter(d => (d.title + ' ' + d.desc + ' ' + d.tags.join(' ')).toLowerCase().includes(q.toLowerCase()));
+          // If you want actual Solr:
+          // const resp = await fetch('/api/solr-search', {method:'POST',headers:{'content-type':'application/json'}, body: JSON.stringify({q,filters:{},page:1})});
+          // const data = await resp.json(); // transform to expected shape
+          renderResults(res);
+        } else {
+          // Semantic search demo: fuzzy match including tag synonyms
+          const res = DEMO_DOCS.map(d => {
+            // crude semantic score: tag match + substring
+            let score = 0;
+            const ql = q.toLowerCase();
+            if((d.title).toLowerCase().includes(ql)) score += 0.6;
+            if((d.desc).toLowerCase().includes(ql)) score += 0.25;
+            if(d.tags.join(' ').toLowerCase().includes(ql)) score += 0.2;
+            return {...d, score};
+          }).filter(x => x.score>0).sort((a,b)=>b.score-a.score);
+          // For actual Weaviate: POST to /v1/vector/ or call your /api/weaviate-search
+          renderResults(res);
+        }
+      } catch(err){
+        console.error(err);
+        resultsList.innerHTML = `<div style="padding:20px;color:#ef4444">Search error — check console. Backend not available.</div>`;
+      } finally {
+        showLoader(false);
+      }
+    }
+
+    // ---------- render results ----------
+    function renderResults(items) {
+      if(!items || items.length===0) {
+        emptyState.style.display = 'block';
+        resultsList.innerHTML = '';
+        resultsCount.textContent = '0 results';
+        return;
+      }
+      emptyState.style.display = 'none';
+      resultsCount.textContent = `${items.length} result${items.length>1?'s':''}`;
+      resultsList.innerHTML = items.map(it => `
+        <div class="result-card" data-id="${escapeHtml(it.id)}">
+          <div style="flex:1">
+            <div class="title">${highlightText(it.title, queryInput.value)}</div>
+            <div class="meta">${escapeHtml(it.type)} · ${escapeHtml(it.tags.join(', '))}</div>
+            <div class="desc">${highlightText(it.desc, queryInput.value)}</div>
+          </div>
+          <div style="width:96px;display:flex;flex-direction:column;align-items:flex-end;gap:8px">
+            <button class="btn view-btn" data-id="${escapeHtml(it.id)}">View</button>
+            <div style="font-size:12px;color:#64748b">score ${Number(it.score||0).toFixed(2)}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // ---------- UI interactions ----------
+    queryInput.addEventListener('input', (e) => {
+      const v = e.target.value;
+      // suggestions from DEMO_DOCS
+      const sug = DEMO_DOCS.filter(d => d.title.toLowerCase().includes(v.toLowerCase())).slice(0,6);
+      showSuggestions(sug);
+      debounceSearch(v);
+    });
+
+    // suggestion click
+    suggestionsEl.addEventListener('click', (ev) => {
+      const item = ev.target.closest('.suggestion-item');
+      if(!item) return;
+      const idx = Number(item.dataset.idx);
+      const doc = DEMO_DOCS[idx];
+      if(doc) {
+        queryInput.value = doc.title;
+        suggestionsEl.classList.remove('visible');
+        performSearch(doc.title);
+      }
+    });
+
+    // keyboard to focus search '/'
+    document.addEventListener('keydown', (e) => {
+      if(e.key === '/' && document.activeElement !== queryInput) {
+        e.preventDefault();
+        queryInput.focus();
+        queryInput.select();
+      }
+    });
+
+    // Enter key -> perform immediate search
+    queryInput.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter') {
+        performSearch(queryInput.value);
+        suggestionsEl.classList.remove('visible');
+      }
+    });
+
+    // mode toggle
+    solrBtn.addEventListener('click', () => { setMode('solr'); });
+    weaviateBtn.addEventListener('click', () => { setMode('weaviate'); });
+
+    function setMode(m) {
+      searchMode = m;
+      if(m==='solr') {
+        solrBtn.classList.add('active'); weaviateBtn.classList.remove('active');
+        modeChip.style.display = 'inline-block'; modeChip.textContent = 'Solr';
+      } else {
+        weaviateBtn.classList.add('active'); solrBtn.classList.remove('active');
+        modeChip.style.display = 'inline-block'; modeChip.textContent = 'Semantic';
+      }
+      // re-run search to update results mode
+      performSearch(queryInput.value);
+    }
+
+    // result click (delegate)
+    resultsList.addEventListener('click', (ev) => {
+      const btn = ev.target.closest('.view-btn');
+      if(!btn) return;
+      const id = btn.dataset.id;
+      const item = DEMO_DOCS.find(d=>d.id===id);
+      if(item) openModal(item);
+    });
+
+    // modal
+    const modal = document.getElementById('modal');
+    const closeModal = document.getElementById('closeModal');
+    function openModal(item) {
+      document.getElementById('modalTitle').textContent = item.title;
+      document.getElementById('modalBody').textContent = item.desc;
+      document.getElementById('modalMeta').textContent = `Type: ${item.type} · Tags: ${item.tags.join(', ')}`;
+      modal.classList.add('open');
+    }
+    closeModal.addEventListener('click', ()=> modal.classList.remove('open'));
+    modal.addEventListener('click', (e) => { if(e.target===modal) modal.classList.remove('open'); });
+
+    // facets & tags
+    document.querySelectorAll('.facet').forEach(cb => cb.addEventListener('change', applyFilters));
+    document.querySelectorAll('.tag-btn').forEach(btn => btn.addEventListener('click', toggleTag));
+    let activeTags = new Set();
+    function toggleTag(e) {
+      const t = e.currentTarget.dataset.tag;
+      if(activeTags.has(t)) { activeTags.delete(t); e.currentTarget.style.background=''; e.currentTarget.style.color=''; }
+      else { activeTags.add(t); e.currentTarget.style.background='#0ea5e9'; e.currentTarget.style.color='#fff'; }
+      applyFilters();
+    }
+    function applyFilters() {
+      const checked = Array.from(document.querySelectorAll('.facet:checked')).map(i=>i.dataset.facet);
+      let filtered = DEMO_DOCS.filter(d => checked.includes(d.type));
+      if(activeTags.size>0) {
+        filtered = filtered.filter(d => d.tags.some(t => activeTags.has(t)));
+      }
+      renderResults(filtered);
+    }
+
+    // voice search (Web Speech API)
+    let recognition;
+    if('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      recognition = new SR();
+      recognition.lang = 'en-IN';
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+
+      voiceBtn.addEventListener('click', () => {
+        try {
+          recognition.start();
+          voiceBtn.style.transform = 'scale(1.05)';
+        } catch(e){}
+      });
+      recognition.onresult = (e) => {
+        const text = e.results[0][0].transcript;
+        queryInput.value = text;
+        performSearch(text);
+      };
+      recognition.onend = () => { voiceBtn.style.transform = ''; };
+    } else {
+      voiceBtn.style.opacity = 0.6;
+      voiceBtn.title = 'Voice not supported in this browser';
+    }
+
+    // initial render
+    performSearch('');
+    // close suggestions when clicking outside
+    document.addEventListener('click', (e) => {
+      if(!e.target.closest('.search')) suggestionsEl.classList.remove('visible');
+    });
+
+    // ---------- HOW TO CONNECT TO SOLR (server-side recommended) ----------
+    /*
+      1) Why server? Solr typically should be queried server-side to keep credentials secure and to transform results.
+      2) Example server handler (Node/Express pseudo):
+         POST /api/solr-search
+         Body: { q: "chatbot", filters: { type: ["project"] }, page: 1 }
+         Server code:
+           const solrQuery = `http://localhost:8983/solr/<core>/select?q=${encodeURIComponent(q)}&wt=json&rows=10`;
+           const res = await fetch(solrQuery);
+           const js = await res.json();
+           // transform js.response.docs into {id,title,desc,tags,type,score} and return
+      3) Ensure CORS or proxy for direct browser access.
+    */
+
+    // ---------- HOW TO CONNECT TO WEAVIATE (semantic) ----------
+    /*
+      1) Weaviate stores vectorized objects and provides nearVector / nearText queries via REST.
+      2) Typical flow:
+         - Create objects in Weaviate with relevant text fields.
+         - For semantic search use: POST /v1/graphql with nearText { concept: "your query", certainty: 0.7 } or use /v1/objects?nearVector
+      3) Many deployments require an API key or token. Do this server-side or use a short-lived token.
+      4) Example call (server-side):
+         POST https://WEAVIATE_URL/v1/graphql
+         { "query": "{ Get { YourClass(nearText:{concepts:[\"chatbot\"],certainty:0.7}){ title description tags } } }" }
+    */
+
+  </script>
 </body>
 </html>
