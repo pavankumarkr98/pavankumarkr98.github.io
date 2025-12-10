@@ -1,295 +1,202 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pavan Kumar KR - Interactive Portfolio</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pavan Kumar KR · AI Engineer Portfolio</title>
+
+    <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.15.1/devicon.min.css"/>
-    <!-- Tailwind CSS CDN -->
+
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
+        body { font-family: 'Inter', sans-serif; }
+
+        /* Glass Effect */
+        .glass {
+            backdrop-filter: blur(12px);
+            background: rgba(255, 255, 255, 0.09);
+            border: 1px solid rgba(255, 255, 255, 0.18);
         }
-        .header-bg {
-            background-image: url('https://placehold.co/1920x1080/0f172a/0ea5e9?text=Professional');
-            background-size: cover;
-            background-position: center;
-            opacity: 0.1;
-        }
-        .section-reveal {
+
+        /* Fade */
+        .fade-up {
             opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+            transform: translateY(30px);
+            transition: .8s ease-out;
         }
-        .section-reveal.is-visible {
+        .fade-up.visible {
             opacity: 1;
             transform: translateY(0);
         }
-        .skills-icon-item {
-            animation: fadeIn 0.5s ease-out forwards;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+
+        /* Header background */
+        .hero-bg {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 70%, #0ea5e9 140%);
         }
     </style>
 </head>
-<body class="bg-gray-50 text-slate-800">
 
-    <!-- Sticky Navigation Bar -->
-    <nav id="navbar" class="fixed top-0 w-full z-50 transition-all duration-300 transform -translate-y-full bg-slate-900 bg-opacity-90 backdrop-blur-sm shadow-lg">
-        <div class="container mx-auto px-4 py-3 flex justify-center space-x-8 text-sm font-medium">
-            <a href="#about" class="text-white hover:text-sky-400 transition-colors">About</a>
-            <a href="#skills" class="text-white hover:text-sky-400 transition-colors">Skills</a>
-            <a href="#services" class="text-white hover:text-sky-400 transition-colors">Services</a>
-            <a href="#projects" class="text-white hover:text-sky-400 transition-colors">Projects</a>
-            <a href="#blog" class="text-white hover:text-sky-400 transition-colors">Blog</a>
-            <a href="#contact" class="text-white hover:text-sky-400 transition-colors">Contact</a>
+<body class="bg-slate-950 text-white">
+
+<!-- Navbar -->
+<nav class="fixed top-0 left-0 w-full z-50 bg-slate-900/40 backdrop-blur-lg border-b border-white/10">
+    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+        <h1 class="text-xl font-bold tracking-wide">PavanKR.</h1>
+        <div class="hidden md:flex space-x-8 text-sm font-medium">
+            <a href="#about" class="hover:text-sky-400">About</a>
+            <a href="#skills" class="hover:text-sky-400">Skills</a>
+            <a href="#services" class="hover:text-sky-400">Services</a>
+            <a href="#projects" class="hover:text-sky-400">Projects</a>
+            <a href="#contact" class="hover:text-sky-400">Contact</a>
         </div>
-    </nav>
+    </div>
+</nav>
 
-    <!-- Header Section -->
-    <header class="relative overflow-hidden bg-slate-900 text-white text-center py-24 sm:py-32 md:py-40">
-        <div class="absolute inset-0 header-bg transform scale-110 -translate-y-1/4 parallax-bg"></div>
-        <div class="relative z-10 px-4">
-            <h1 class="text-4xl sm:text-6xl md:text-7xl font-bold leading-tight animate-[fadeIn_1s_ease-in-out]">Pavan Kumar KR</h1>
-            <p class="mt-4 text-xl sm:text-2xl text-sky-400 font-light tracking-wide animate-[fadeIn_1.5s_ease-in-out]">Full-Stack & Cloud Engineer | AI/ML Specialist | Prompt Engineer</p>
-         <!-- <a href="resume.html" class="inline-block mt-8 px-8 py-3 bg-sky-500 text-white font-bold rounded-full shadow-lg hover:bg-sky-600 transform hover:-translate-y-1 transition-all duration-300">
-                <i class="fa-solid fa-download mr-2"></i> Download Resume
-            </a> -->
+<!-- Hero Section -->
+<header class="hero-bg py-40 text-center relative overflow-hidden">
+    <div class="absolute inset-0 opacity-20 bg-[url('https://placehold.co/2000x1200/0f172a/fff?text=AI')] bg-cover bg-center"></div>
+
+    <div class="relative z-10 px-4">
+        <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight">Pavan Kumar KR</h1>
+        <p class="mt-4 text-2xl md:text-3xl text-sky-300 font-light">
+            AI Engineer · Full-Stack Developer · Cloud Architect
+        </p>
+        <div class="mt-8">
+            <a href="#contact" class="px-10 py-4 bg-sky-600 hover:bg-sky-700 rounded-full shadow-xl text-lg font-semibold transition">Let's Connect</a>
         </div>
-    </header>
+    </div>
+</header>
 
-    <!-- About Section -->
-    <section id="about" class="container mx-auto px-4 py-16 md:py-24 section-reveal">
-        <div class="text-center max-w-4xl mx-auto">
-            <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 border-b-4 border-sky-500 pb-2 inline-block">Professional Summary</h2>
-            <p class="mt-8 text-lg text-slate-600 leading-relaxed">
-                Results-driven Full-Stack Engineer with 3+ years of experience in architecting and deploying robust web and cloud solutions. My expertise lies in Python,C#,Java, and modern frameworks, complemented by a deep understanding of AI/ML concepts to build intelligent, business-critical applications.
+<!-- About -->
+<section id="about" class="container mx-auto px-6 py-24 fade-up">
+    <h2 class="text-4xl font-bold text-center mb-6">About Me</h2>
+    <p class="text-slate-300 text-lg leading-relaxed max-w-3xl mx-auto text-center">
+        I am an AI Engineer & Full-Stack Developer with expertise in LLMs, RAG systems, cloud deployments, 
+        scalable microservices, and end-to-end product engineering. I combine engineering + AI to build 
+        intelligent systems that solve real-world business challenges.
+    </p>
+</section>
+
+<!-- Skills -->
+<section id="skills" class="bg-slate-900/50 py-24 fade-up">
+    <div class="container mx-auto px-6 text-center">
+        <h2 class="text-4xl font-bold">Skills & Technologies</h2>
+
+        <div class="mt-12 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-8 text-5xl">
+            <i class="devicon-python-plain colored hover:scale-110 transition" title="Python"></i>
+            <i class="devicon-react-original colored hover:scale-110 transition"></i>
+            <i class="devicon-googlecloud-plain colored hover:scale-110 transition"></i>
+            <i class="devicon-amazonwebservices-plain-wordmark colored hover:scale-110 transition"></i>
+            <i class="devicon-docker-plain colored hover:scale-110 transition"></i>
+            <i class="devicon-postgresql-plain colored hover:scale-110 transition"></i>
+        </div>
+    </div>
+</section>
+
+<!-- Services -->
+<section id="services" class="container mx-auto px-6 py-24 fade-up">
+    <h2 class="text-4xl font-bold text-center">My Expertise</h2>
+
+    <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-10">
+        <div class="glass p-10 rounded-2xl shadow-xl hover:scale-105 transition">
+            <i class="fa-solid fa-cloud text-4xl text-sky-400"></i>
+            <h3 class="text-xl font-semibold mt-4">Cloud & DevOps</h3>
+            <p class="text-slate-300 mt-3">
+                AWS, GCP, Azure, Docker, CI/CD, Infra Automation, Scalable deployments.
             </p>
-            <p class="mt-4 text-lg text-slate-600 leading-relaxed">
-                I specialize in translating complex business requirements into scalable, cost-effective technical architectures. From developing large-scale distributed systems to implementing predictive analytics models, my goal is to deliver impactful solutions that drive growth and operational efficiency.
+        </div>
+
+        <div class="glass p-10 rounded-2xl shadow-xl hover:scale-105 transition">
+            <i class="fa-solid fa-code text-4xl text-sky-400"></i>
+            <h3 class="text-xl font-semibold mt-4">Full-Stack Engineering</h3>
+            <p class="text-slate-300 mt-3">
+                React, Django, ASP.NET, APIs, Microservices, Scalable backend systems.
             </p>
         </div>
-    </section>
 
-    <!-- Skills Section -->
-    <section id="skills" class="bg-gray-100 py-16 md:py-24 section-reveal">
-        <div class="container mx-auto px-4 text-center">
-            <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 border-b-4 border-sky-500 pb-2 inline-block">Skills & Technologies</h2>
-            <div class="mt-12 flex flex-wrap justify-center gap-8 text-4xl sm:text-5xl md:text-6xl">
-                <!-- Devicons - JS will add a class to trigger animation -->
-                <i class="devicon-python-plain colored hover:scale-110 transition-transform cursor-pointer" title="Python"></i>
-                <i class="devicon-react-original colored hover:scale-110 transition-transform cursor-pointer" title="React"></i>
-                <i class="devicon-googlecloud-plain colored hover:scale-110 transition-transform cursor-pointer" title="GCP"></i>
-                <i class="devicon-amazonwebservices-plain colored hover:scale-110 transition-transform cursor-pointer" title="AWS"></i>
-                <i class="devicon-django-plain colored hover:scale-110 transition-transform cursor-pointer" title="Django"></i>
-                <i class="devicon-nodejs-plain colored hover:scale-110 transition-transform cursor-pointer" title="Node.js"></i>
-                <i class="devicon-tensorflow-plain colored hover:scale-110 transition-transform cursor-pointer" title="TensorFlow"></i>
-                <i class="devicon-docker-plain colored hover:scale-110 transition-transform cursor-pointer" title="Docker"></i>
-                <i class="devicon-mongodb-plain colored hover:scale-110 transition-transform cursor-pointer" title="MongoDB"></i>
-                <i class="devicon-postgresql-plain colored hover:scale-110 transition-transform cursor-pointer" title="PostgreSQL"></i>
-            </div>
+        <div class="glass p-10 rounded-2xl shadow-xl hover:scale-105 transition">
+            <i class="fa-solid fa-robot text-4xl text-sky-400"></i>
+            <h3 class="text-xl font-semibold mt-4">AI & LLM Engineering</h3>
+            <p class="text-slate-300 mt-3">
+                LLM inference (vLLM), RAG pipelines, embeddings, NL-to-SQL models, AI chatbots.
+            </p>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Services/Expertise Section -->
-    <section id="services" class="container mx-auto px-4 py-16 md:py-24 section-reveal">
-        <div class="text-center">
-            <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 border-b-4 border-sky-500 pb-2 inline-block">My Professional Expertise</h2>
-        </div>
-        <div class="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <!-- Service Card 1 -->
-            <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
-                <div class="flex items-center text-sky-500">
-                    <i class="fa-solid fa-cloud text-3xl"></i>
-                    <h3 class="ml-4 text-xl font-bold text-slate-900">Cloud Architecture & Deployment</h3>
-                </div>
-                <p class="mt-4 text-slate-600">
-                    Designing and deploying scalable, secure, and cost-effective solutions on AWS, GCP, and Azure. Expertise includes serverless functions, containerization, and infrastructure as code.
-                </p>
-            </div>
-            <!-- Service Card 2 -->
-            <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
-                <div class="flex items-center text-sky-500">
-                    <i class="fa-solid fa-code text-3xl"></i>
-                    <h3 class="ml-4 text-xl font-bold text-slate-900">Full-Stack Development</h3>
-                </div>
-                <p class="mt-4 text-slate-600">
-                    Building robust and responsive web applications with modern frameworks like React and Django. I focus on clean code, seamless user experience, and RESTful API design.
-                </p>
-            </div>
-            <!-- Service Card 3 -->
-            <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
-                <div class="flex items-center text-sky-500">
-                    <i class="fa-solid fa-robot text-3xl"></i>
-                    <h3 class="ml-4 text-xl font-bold text-slate-900">AI/ML & Data Solutions</h3>
-                </div>
-                <p class="mt-4 text-slate-600">
-                    Developing and deploying intelligent systems, including predictive models, recommendation engines, and NLP-powered chatbots using TensorFlow, PyTorch, and scikit-learn.
-                </p>
-            </div>
-        </div>
-    </section>
+<!-- Projects -->
+<section id="projects" class="bg-slate-900/40 py-24 fade-up">
+    <div class="container mx-auto px-6 text-center">
+        <h2 class="text-4xl font-bold">Projects</h2>
 
-    <!-- Projects Section -->
-    <section id="projects" class="container mx-auto px-4 py-16 md:py-24 section-reveal">
-        <div class="text-center">
-            <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 border-b-4 border-sky-500 pb-2 inline-block">Key Projects</h2>
-        </div>
-        <div class="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div class="bg-white rounded-xl shadow-lg overflow-hidden transform hover:scale-[1.02] transition-transform duration-300 group">
-                <img src="https://placehold.co/600x400/1e293b/fff?text=AI+Chatbot" alt="AI Chatbot Project" class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500">
-                <div class="p-6">
-                    <h3 class="text-xl font-bold text-slate-900">AI Chatbot</h3>
-                    <p class="mt-2 text-slate-600">
-                        Built multilingual NLP chatbot reducing support workload by 60% and improving user engagement.
+        <div class="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+            <!-- Project Card -->
+            <div class="glass rounded-2xl shadow-lg overflow-hidden hover:scale-105 transition">
+                <img src="https://placehold.co/700x380/0ea5e9/fff?text=AI+Chatbot" class="w-full">
+                <div class="p-6 text-left">
+                    <h3 class="text-xl font-bold">AI Chatbot</h3>
+                    <p class="mt-2 text-slate-300">
+                        Multilingual LLM chatbot using embeddings, RAG & vLLM inference.
                     </p>
                 </div>
             </div>
-            <div class="bg-white rounded-xl shadow-lg overflow-hidden transform hover:scale-[1.02] transition-transform duration-300 group">
-                <img src="https://placehold.co/600x400/1e293b/fff?text=Cloud+Optimizer" alt="Cloud Cost Optimizer Project" class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500">
-                <div class="p-6">
-                    <h3 class="text-xl font-bold text-slate-900">Cloud Cost Optimizer</h3>
-                    <p class="mt-2 text-slate-600">
-                        Multi-cloud monitoring platform saving $150K/year by optimizing cloud resources and providing real-time analytics.
+
+            <div class="glass rounded-2xl shadow-lg overflow-hidden hover:scale-105 transition">
+                <img src="https://placehold.co/700x380/6366f1/fff?text=Cloud+Optimizer">
+                <div class="p-6 text-left">
+                    <h3 class="text-xl font-bold">Cloud Cost Optimizer</h3>
+                    <p class="mt-2 text-slate-300">
+                        Saved $150K/yr using cloud metrics, auto-scaling & infra tuning.
                     </p>
                 </div>
             </div>
-            <div class="bg-white rounded-xl shadow-lg overflow-hidden transform hover:scale-[1.02] transition-transform duration-300 group">
-                <img src="https://placehold.co/600x400/1e293b/fff?text=Analytics+Dashboard" alt="Real-Time Analytics Dashboard Project" class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500">
-                <div class="p-6">
-                    <h3 class="text-xl font-bold text-slate-900">Analytics Dashboard</h3>
-                    <p class="mt-2 text-slate-600">
-                        A Django + React dashboard for streaming metrics, increasing data-driven decision speed by 45%.
+
+            <div class="glass rounded-2xl shadow-lg overflow-hidden hover:scale-105 transition">
+                <img src="https://placehold.co/700x380/14b8a6/fff?text=Analytics+Dashboard">
+                <div class="p-6 text-left">
+                    <h3 class="text-xl font-bold">Real-Time Dashboard</h3>
+                    <p class="mt-2 text-slate-300">
+                        Streaming analytics with Django + React + WebSockets.
                     </p>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Blog Section -->
-    <section id="blog" class="bg-gray-100 py-16 md:py-24 section-reveal">
-        <div class="container mx-auto px-4 text-center">
-            <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 border-b-4 border-sky-500 pb-2 inline-block">Latest Articles</h2>
-        </div>
-        <div class="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            <div class="bg-white p-6 rounded-xl shadow-md">
-                <h4 class="text-xl font-bold text-slate-900">The Power of Serverless Functions</h4>
-                <p class="text-sm text-slate-500 mt-2">Published: Oct 20, 2023</p>
-                <p class="mt-4 text-slate-600">An in-depth look at how serverless architecture can reduce costs and simplify deployment pipelines for modern applications.</p>
-                <a href="#" class="mt-4 inline-block text-sky-600 hover:text-sky-800 font-semibold">Read More &rarr;</a>
-            </div>
-            <div class="bg-white p-6 rounded-xl shadow-md">
-                <h4 class="text-xl font-bold text-slate-900">Building a Scalable Data Pipeline</h4>
-                <p class="text-sm text-slate-500 mt-2">Published: Sep 15, 2023</p>
-                <p class="mt-4 text-slate-600">A step-by-step guide to building an efficient data processing pipeline using Apache Kafka and Python.</p>
-                <a href="#" class="mt-4 inline-block text-sky-600 hover:text-sky-800 font-semibold">Read More &rarr;</a>
-            </div>
-            <div class="bg-white p-6 rounded-xl shadow-md">
-                <h4 class="text-xl font-bold text-slate-900">Generative AI for Developers</h4>
-                <p class="text-sm text-slate-500 mt-2">Published: Aug 28, 2023</p>
-                <p class="mt-4 text-slate-600">Exploring the practical applications of large language models for developers, from code generation to automated testing.</p>
-                <a href="#" class="mt-4 inline-block text-sky-600 hover:text-sky-800 font-semibold">Read More &rarr;</a>
-            </div>
-        </div>
-    </section>
+<!-- Contact -->
+<section id="contact" class="container mx-auto px-6 py-24 fade-up">
+    <h2 class="text-4xl font-bold text-center">Contact</h2>
 
-    <!-- Contact Section -->
-    <section id="contact" class="bg-slate-900 py-16 md:py-24 section-reveal">
-        <div class="container mx-auto px-4">
-            <div class="max-w-2xl mx-auto text-center text-white">
-                <h2 class="text-3xl sm:text-4xl font-extrabold border-b-4 border-sky-500 pb-2 inline-block">Get in Touch</h2>
-                <p class="mt-4 text-lg text-slate-300">
-                    I am currently open to new opportunities. Feel free to reach out to discuss collaborations, projects, or just to say hello!
-                </p>
-                <form id="contactForm" class="mt-8 bg-slate-800 p-8 rounded-xl shadow-2xl">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                        <input type="text" id="name" placeholder="Your Name" class="p-4 rounded-lg bg-slate-700 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-500" required>
-                        <input type="email" id="email" placeholder="Your Email" class="p-4 rounded-lg bg-slate-700 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-500" required>
-                    </div>
-                    <textarea id="message" rows="5" placeholder="Your Message" class="mt-6 p-4 w-full rounded-lg bg-slate-700 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-500" required></textarea>
-                    <button type="submit" class="mt-6 w-full px-8 py-4 bg-sky-500 text-white font-bold rounded-lg hover:bg-sky-600 transition-colors duration-300 transform hover:scale-[1.01]">
-                        Send Message
-                    </button>
-                </form>
-                <div id="form-message" class="mt-4 text-sm font-medium"></div>
-            </div>
-        </div>
-    </section>
+    <form class="max-w-2xl mx-auto mt-10 space-y-6 glass p-10 rounded-2xl shadow-xl">
+        <input type="text" placeholder="Your Name" class="w-full p-4 bg-white/10 rounded-lg border border-white/20 focus:ring-2 focus:ring-sky-400">
+        <input type="email" placeholder="Your Email" class="w-full p-4 bg-white/10 rounded-lg border border-white/20 focus:ring-2 focus:ring-sky-400">
+        <textarea rows="4" placeholder="Your Message" class="w-full p-4 bg-white/10 rounded-lg border border-white/20 focus:ring-2 focus:ring-sky-400"></textarea>
+        <button class="w-full py-4 bg-sky-600 hover:bg-sky-700 rounded-lg font-semibold text-lg transition">
+            Send Message
+        </button>
+    </form>
+</section>
 
-    <!-- Footer -->
-    <footer class="bg-slate-950 text-white text-center py-8">
-        <div class="container mx-auto px-4">
-            <div class="flex justify-center space-x-6 text-2xl mb-4">
-                <a href="https://linkedin.com" target="_blank" class="hover:text-sky-400 transition-colors"><i class="fa-brands fa-linkedin"></i></a>
-                <a href="https://github.com" target="_blank" class="hover:text-sky-400 transition-colors"><i class="fa-brands fa-github"></i></a>
-                <a href="https://twitter.com" target="_blank" class="hover:text-sky-400 transition-colors"><i class="fa-brands fa-x-twitter"></i></a>
-            </div>
-            <p>&copy; 2023 Pavan Kumar KR. All Rights Reserved.</p>
-        </div>
-    </footer>
+<!-- Footer -->
+<footer class="py-10 text-center text-slate-400 text-sm border-t border-slate-700">
+    © 2025 Pavan Kumar KR · AI Engineer Portfolio
+</footer>
 
-    <script>
-        // JS for animations and interactions
-        document.addEventListener('DOMContentLoaded', () => {
-
-            // Scroll-triggered animations for sections
-            const sections = document.querySelectorAll('.section-reveal');
-            const observerOptions = {
-                root: null,
-                rootMargin: '0px',
-                threshold: 0.2
-            };
-            const observer = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('is-visible');
-                        // Animate skills icons within the skills section
-                        if (entry.target.id === 'skills') {
-                            const icons = entry.target.querySelectorAll('i');
-                            icons.forEach((icon, index) => {
-                                icon.style.animationDelay = `${index * 0.1}s`;
-                                icon.classList.add('skills-icon-item');
-                            });
-                        }
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, observerOptions);
-            sections.forEach(section => observer.observe(section));
-
-            // Parallax effect for header background
-            const headerBg = document.querySelector('.parallax-bg');
-            window.addEventListener('scroll', () => {
-                const scrollY = window.scrollY;
-                headerBg.style.transform = `scale(1.1) translateY(${scrollY * 0.3}px)`;
-            });
-
-            // Sticky navbar
-            const navbar = document.getElementById('navbar');
-            window.addEventListener('scroll', () => {
-                if (window.scrollY > 300) {
-                    navbar.classList.remove('-translate-y-full');
-                } else {
-                    navbar.classList.add('-translate-y-full');
-                }
-            });
-
-            // Handle contact form submission
-            const contactForm = document.getElementById('contactForm');
-            const formMessage = document.getElementById('form-message');
-            contactForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                formMessage.textContent = 'Thank you for your message! I will get back to you shortly.';
-                formMessage.classList.remove('text-red-500');
-                formMessage.classList.add('text-green-500');
-                contactForm.reset();
-            });
+<script>
+    // Reveal Animations
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+            if (e.isIntersecting) e.target.classList.add('visible');
         });
-    </script>
+    }, { threshold: 0.2 });
+
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
 
 </body>
 </html>
