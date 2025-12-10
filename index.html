@@ -11,9 +11,15 @@
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- EmailJS for contact form -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 
     <style>
-        body { font-family: 'Inter', sans-serif; }
+        body { 
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
 
         /* Glass Effect */
         .glass {
@@ -22,7 +28,7 @@
             border: 1px solid rgba(255, 255, 255, 0.18);
         }
 
-        /* Fade */
+        /* Animations */
         .fade-up {
             opacity: 0;
             transform: translateY(30px);
@@ -32,10 +38,167 @@
             opacity: 1;
             transform: translateY(0);
         }
+        
+        .fade-left {
+            opacity: 0;
+            transform: translateX(-30px);
+            transition: .8s ease-out;
+        }
+        .fade-left.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        .fade-right {
+            opacity: 0;
+            transform: translateX(30px);
+            transition: .8s ease-out;
+        }
+        .fade-right.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Pulse animation */
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(14, 165, 233, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(14, 165, 233, 0.6); }
+        }
+        .pulse-glow {
+            animation: pulse-glow 2s infinite;
+        }
+
+        /* Gradient text */
+        .gradient-text {
+            background: linear-gradient(90deg, #0ea5e9, #6366f1, #8b5cf6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
 
         /* Header background */
         .hero-bg {
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 70%, #0ea5e9 140%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(14, 165, 233, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(139, 92, 246, 0.05) 0%, transparent 50%);
+        }
+
+        /* Skill bar animation */
+        .skill-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .skill-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #0ea5e9, #6366f1);
+            border-radius: 4px;
+            width: 0;
+            transition: width 1.5s ease-in-out;
+        }
+        
+        .skill-progress.animate {
+            width: var(--skill-level);
+        }
+
+        /* Floating animation */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        /* Typing effect */
+        .typing-container {
+            display: inline-block;
+            position: relative;
+        }
+        
+        .typing-cursor {
+            display: inline-block;
+            width: 3px;
+            height: 1em;
+            background-color: #0ea5e9;
+            margin-left: 2px;
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* Mobile menu */
+        .mobile-menu {
+            transform: translateY(-100%);
+            transition: transform 0.3s ease-in-out;
+        }
+        
+        .mobile-menu.open {
+            transform: translateY(0);
+        }
+
+        /* Project card hover */
+        .project-card {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(14, 165, 233, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .project-card:hover::before {
+            left: 100%;
+        }
+
+        /* Achievement badge */
+        .achievement-badge {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .achievement-badge::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+        
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
         }
     </style>
 </head>
@@ -43,159 +206,701 @@
 <body class="bg-slate-950 text-white">
 
 <!-- Navbar -->
-<nav class="fixed top-0 left-0 w-full z-50 bg-slate-900/40 backdrop-blur-lg border-b border-white/10">
+<nav class="fixed top-0 left-0 w-full z-50 bg-slate-900/80 backdrop-blur-lg border-b border-white/10">
     <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-        <h1 class="text-xl font-bold tracking-wide">PavanKR.</h1>
+        <h1 class="text-2xl font-bold tracking-wide gradient-text">PavanKR.</h1>
+        
+        <!-- Desktop Menu -->
         <div class="hidden md:flex space-x-8 text-sm font-medium">
-            <a href="#about" class="hover:text-sky-400">About</a>
-            <a href="#skills" class="hover:text-sky-400">Skills</a>
-            <a href="#services" class="hover:text-sky-400">Services</a>
-            <a href="#projects" class="hover:text-sky-400">Projects</a>
-            <a href="#contact" class="hover:text-sky-400">Contact</a>
+            <a href="#about" class="hover:text-sky-400 transition-colors duration-300">About</a>
+            <a href="#skills" class="hover:text-sky-400 transition-colors duration-300">Skills</a>
+            <a href="#experience" class="hover:text-sky-400 transition-colors duration-300">Experience</a>
+            <a href="#projects" class="hover:text-sky-400 transition-colors duration-300">Projects</a>
+            <a href="#contact" class="hover:text-sky-400 transition-colors duration-300">Contact</a>
+        </div>
+        
+        <!-- Mobile Menu Button -->
+        <button id="menu-toggle" class="md:hidden text-xl">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+    
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="mobile-menu absolute top-full left-0 w-full bg-slate-900/95 backdrop-blur-lg border-b border-white/10 md:hidden">
+        <div class="flex flex-col space-y-4 p-6">
+            <a href="#about" class="hover:text-sky-400 transition-colors duration-300 py-2">About</a>
+            <a href="#skills" class="hover:text-sky-400 transition-colors duration-300 py-2">Skills</a>
+            <a href="#experience" class="hover:text-sky-400 transition-colors duration-300 py-2">Experience</a>
+            <a href="#projects" class="hover:text-sky-400 transition-colors duration-300 py-2">Projects</a>
+            <a href="#contact" class="hover:text-sky-400 transition-colors duration-300 py-2">Contact</a>
         </div>
     </div>
 </nav>
 
 <!-- Hero Section -->
-<header class="hero-bg py-40 text-center relative overflow-hidden">
-    <div class="absolute inset-0 opacity-20 bg-[url('https://placehold.co/2000x1200/0f172a/fff?text=AI')] bg-cover bg-center"></div>
+<header class="hero-bg py-32 md:py-40 text-center relative overflow-hidden">
+    <div class="absolute inset-0">
+        <!-- Animated background elements -->
+        <div class="absolute top-1/4 left-1/4 w-64 h-64 bg-sky-500/10 rounded-full blur-3xl floating"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl floating" style="animation-delay: -3s;"></div>
+    </div>
 
     <div class="relative z-10 px-4">
-        <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight">Pavan Kumar KR</h1>
-        <p class="mt-4 text-2xl md:text-3xl text-sky-300 font-light">
-            AI Engineer · Full-Stack Developer · Cloud Architect
-        </p>
-        <div class="mt-8">
-            <a href="#contact" class="px-10 py-4 bg-sky-600 hover:bg-sky-700 rounded-full shadow-xl text-lg font-semibold transition">Let's Connect</a>
+        <div class="inline-block mb-4 px-4 py-2 glass rounded-full text-sm">
+            <span class="typing-container">
+                AI Engineer & Full-Stack Developer
+                <span class="typing-cursor"></span>
+            </span>
         </div>
+        
+        <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight">
+            Pavan Kumar <span class="gradient-text">KR</span>
+        </h1>
+        
+        <p class="mt-6 text-xl md:text-2xl text-slate-300 font-light max-w-3xl mx-auto">
+            Building intelligent systems with LLMs, RAG, cloud architecture & scalable microservices
+        </p>
+        
+        <div class="mt-12 flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="#contact" 
+               class="px-8 py-4 bg-sky-600 hover:bg-sky-700 rounded-full shadow-xl text-lg font-semibold transition-all duration-300 hover:scale-105 pulse-glow">
+                <i class="fas fa-paper-plane mr-2"></i>Let's Connect
+            </a>
+            <a href="#projects" 
+               class="px-8 py-4 glass hover:bg-white/20 rounded-full shadow-xl text-lg font-semibold transition-all duration-300 hover:scale-105">
+                <i class="fas fa-code mr-2"></i>View Projects
+            </a>
+        </div>
+        
+        <!-- Stats -->
+        <div class="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-2xl mx-auto">
+            <div class="glass p-4 rounded-xl text-center">
+                <div class="text-2xl font-bold text-sky-400">3.6+</div>
+                <div class="text-sm text-slate-400">Years Experience</div>
+            </div>
+            <div class="glass p-4 rounded-xl text-center">
+                <div class="text-2xl font-bold text-sky-400">40+</div>
+                <div class="text-sm text-slate-400">Projects Delivered</div>
+            </div>
+            <div class="glass p-4 rounded-xl text-center">
+                <div class="text-2xl font-bold text-sky-400">40%</div>
+                <div class="text-sm text-slate-400">Cost Reduced</div>
+            </div>
+            <div class="glass p-4 rounded-xl text-center">
+                <div class="text-2xl font-bold text-sky-400">100%</div>
+                <div class="text-sm text-slate-400">Client Satisfaction</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scroll indicator -->
+    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2">
+        <a href="#about" class="animate-bounce">
+            <i class="fas fa-chevron-down text-2xl text-sky-400"></i>
+        </a>
     </div>
 </header>
 
-<!-- About -->
+<!-- About Section -->
 <section id="about" class="container mx-auto px-6 py-24 fade-up">
-    <h2 class="text-4xl font-bold text-center mb-6">About Me</h2>
-    <p class="text-slate-300 text-lg leading-relaxed max-w-3xl mx-auto text-center">
-        I am an AI Engineer & Full-Stack Developer with expertise in LLMs, RAG systems, cloud deployments, 
-        scalable microservices, and end-to-end product engineering. I combine engineering + AI to build 
-        intelligent systems that solve real-world business challenges.
-    </p>
+    <div class="max-w-6xl mx-auto">
+        <h2 class="text-4xl font-bold text-center mb-4">About Me</h2>
+        <div class="w-24 h-1 bg-gradient-to-r from-sky-500 to-indigo-500 mx-auto mb-12 rounded-full"></div>
+        
+        <div class="grid md:grid-cols-2 gap-12 items-center">
+            <div class="fade-left">
+                <div class="glass rounded-2xl p-8">
+                    <h3 class="text-2xl font-bold mb-4 gradient-text">Professional Summary</h3>
+                    <p class="text-slate-300 leading-relaxed">
+                        AI Engineer and Full-Stack Developer with <span class="text-sky-400 font-semibold">3.6+ years</span> of experience building scalable applications, deploying AI/LLM systems, and architecting cloud-based solutions. Strong expertise in LLM inference, RAG pipelines, vector databases, chatbot development, and multi-model orchestration.
+                    </p>
+                    <p class="text-slate-300 leading-relaxed mt-4">
+                        Proven ability to own end-to-end product development—from backend microservices to infrastructure, CI/CD, and production support. Collaborated directly with leadership to drive technical strategy and deliver business-impactful AI solutions.
+                    </p>
+                    
+                    <div class="mt-8 grid grid-cols-2 gap-4">
+                        <div class="flex items-center">
+                            <i class="fas fa-map-marker-alt text-sky-400 mr-3"></i>
+                            <span>Bengaluru, KA 560091</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-envelope text-sky-400 mr-3"></i>
+                            <span>pavankumarkr98@gmail.com</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-phone text-sky-400 mr-3"></i>
+                            <span>+91 9945730082</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-graduation-cap text-sky-400 mr-3"></i>
+                            <span>BE in Civil Engineering</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="fade-right">
+                <div class="glass rounded-2xl p-8">
+                    <h3 class="text-2xl font-bold mb-6 gradient-text">Core Expertise</h3>
+                    
+                    <div class="space-y-6">
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="font-medium">AI/LLM Engineering</span>
+                                <span class="text-sky-400">90%</span>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-progress" style="--skill-level: 90%"></div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="font-medium">Cloud & DevOps</span>
+                                <span class="text-sky-400">85%</span>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-progress" style="--skill-level: 85%"></div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="font-medium">Full-Stack Development</span>
+                                <span class="text-sky-400">88%</span>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-progress" style="--skill-level: 88%"></div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="font-medium">System Architecture</span>
+                                <span class="text-sky-400">82%</span>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-progress" style="--skill-level: 82%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
 
-<!-- Skills -->
+<!-- Skills Section -->
 <section id="skills" class="bg-slate-900/50 py-24 fade-up">
-    <div class="container mx-auto px-6 text-center">
-        <h2 class="text-4xl font-bold">Skills & Technologies</h2>
+    <div class="container mx-auto px-6">
+        <h2 class="text-4xl font-bold text-center mb-4">Skills & Technologies</h2>
+        <div class="w-24 h-1 bg-gradient-to-r from-sky-500 to-indigo-500 mx-auto mb-12 rounded-full"></div>
 
-        <div class="mt-12 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-8 text-5xl">
-            <i class="devicon-python-plain colored hover:scale-110 transition" title="Python"></i>
-            <i class="devicon-react-original colored hover:scale-110 transition"></i>
-            <i class="devicon-googlecloud-plain colored hover:scale-110 transition"></i>
-            <i class="devicon-amazonwebservices-plain-wordmark colored hover:scale-110 transition"></i>
-            <i class="devicon-docker-plain colored hover:scale-110 transition"></i>
-            <i class="devicon-postgresql-plain colored hover:scale-110 transition"></i>
+        <div class="grid md:grid-cols-3 gap-8">
+            <!-- AI/ML Skills -->
+            <div class="glass p-8 rounded-2xl">
+                <div class="text-4xl text-sky-400 mb-4">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-6">AI / LLM / ML</h3>
+                <div class="space-y-3">
+                    <div class="flex items-center">
+                        <i class="fas fa-check text-green-400 mr-3"></i>
+                        <span>LLM Inference & Optimization (vLLM, HuggingFace)</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-check text-green-400 mr-3"></i>
+                        <span>RAG Systems & Vector Databases (Weaviate)</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-check text-green-400 mr-3"></i>
+                        <span>Prompt Engineering & Fine-tuning</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-check text-green-400 mr-3"></i>
+                        <span>Multi-model Orchestration & Agents</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-check text-green-400 mr-3"></i>
+                        <span>NLP Tasks & Embeddings</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Technical Skills -->
+            <div class="glass p-8 rounded-2xl">
+                <div class="text-4xl text-sky-400 mb-4">
+                    <i class="fas fa-code"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-6">Technical Stack</h3>
+                <div class="space-y-3">
+                    <div class="flex items-center">
+                        <i class="fas fa-check text-green-400 mr-3"></i>
+                        <span>Python, Java, C#, JavaScript, TypeScript</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-check text-green-400 mr-3"></i>
+                        <span>Django, FastAPI, Spring Boot, .NET, React</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-check text-green-400 mr-3"></i>
+                        <span>PostgreSQL, MySQL, MongoDB, NoSQL</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-check text-green-400 mr-3"></i>
+                        <span>AWS, Azure, GCP Cloud Platforms</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-check text-green-400 mr-3"></i>
+                        <span>Docker, Nginx, Apache, Jenkins</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tools & Platforms -->
+            <div class="glass p-8 rounded-2xl">
+                <div class="text-4xl text-sky-400 mb-4">
+                    <i class="fas fa-tools"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-6">Tools & Platforms</h3>
+                <div class="space-y-3">
+                    <div class="flex items-center">
+                        <i class="fas fa-check text-green-400 mr-3"></i>
+                        <span>GitHub, Bitbucket, GitLab</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-check text-green-400 mr-3"></i>
+                        <span>Apache Solr, Elasticsearch</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-check text-green-400 mr-3"></i>
+                        <span>n8n Workflow Automation</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-check text-green-400 mr-3"></i>
+                        <span>TensorRT-LLM, ONNX</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-check text-green-400 mr-3"></i>
+                        <span>NumPy, Pandas, scikit-learn</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tech Icons -->
+        <div class="mt-16 grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-6 text-4xl text-center">
+            <i class="devicon-python-plain colored hover:scale-125 transition-transform duration-300" title="Python"></i>
+            <i class="devicon-react-original colored hover:scale-125 transition-transform duration-300" title="React"></i>
+            <i class="devicon-django-plain colored hover:scale-125 transition-transform duration-300" title="Django"></i>
+            <i class="devicon-java-plain colored hover:scale-125 transition-transform duration-300" title="Java"></i>
+            <i class="devicon-csharp-plain colored hover:scale-125 transition-transform duration-300" title="C#"></i>
+            <i class="devicon-amazonwebservices-plain-wordmark colored hover:scale-125 transition-transform duration-300" title="AWS"></i>
+            <i class="devicon-googlecloud-plain colored hover:scale-125 transition-transform duration-300" title="Google Cloud"></i>
+            <i class="devicon-docker-plain colored hover:scale-125 transition-transform duration-300" title="Docker"></i>
         </div>
     </div>
 </section>
 
-<!-- Services -->
-<section id="services" class="container mx-auto px-6 py-24 fade-up">
-    <h2 class="text-4xl font-bold text-center">My Expertise</h2>
+<!-- Experience Section -->
+<section id="experience" class="container mx-auto px-6 py-24 fade-up">
+    <div class="max-w-6xl mx-auto">
+        <h2 class="text-4xl font-bold text-center mb-4">Work Experience</h2>
+        <div class="w-24 h-1 bg-gradient-to-r from-sky-500 to-indigo-500 mx-auto mb-12 rounded-full"></div>
 
-    <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-10">
-        <div class="glass p-10 rounded-2xl shadow-xl hover:scale-105 transition">
-            <i class="fa-solid fa-cloud text-4xl text-sky-400"></i>
-            <h3 class="text-xl font-semibold mt-4">Cloud & DevOps</h3>
-            <p class="text-slate-300 mt-3">
-                AWS, GCP, Azure, Docker, CI/CD, Infra Automation, Scalable deployments.
-            </p>
-        </div>
+        <!-- Timeline -->
+        <div class="relative">
+            <!-- Timeline line -->
+            <div class="absolute left-4 md:left-1/2 transform md:-translate-x-1/2 h-full w-1 bg-gradient-to-b from-sky-500 to-indigo-500"></div>
 
-        <div class="glass p-10 rounded-2xl shadow-xl hover:scale-105 transition">
-            <i class="fa-solid fa-code text-4xl text-sky-400"></i>
-            <h3 class="text-xl font-semibold mt-4">Full-Stack Engineering</h3>
-            <p class="text-slate-300 mt-3">
-                React, Django, ASP.NET, APIs, Microservices, Scalable backend systems.
-            </p>
-        </div>
+            <!-- Experience 1 -->
+            <div class="relative mb-16 md:flex items-center">
+                <div class="md:w-1/2 md:pr-12 md:text-right mb-4 md:mb-0">
+                    <div class="glass p-6 rounded-2xl md:mr-8">
+                        <span class="inline-block px-3 py-1 bg-sky-500/20 text-sky-400 rounded-full text-sm font-semibold mb-2">Dec 2022 - Present</span>
+                        <h3 class="text-2xl font-bold">Full Stack Developer + Principal Engineer</h3>
+                        <p class="text-sky-300 font-medium">Codeland Infosolutions Pvt. Ltd</p>
+                        <p class="text-slate-400">Bengaluru, India</p>
+                    </div>
+                </div>
+                
+                <div class="absolute left-2 md:left-1/2 transform -translate-x-1/2 w-4 h-4 bg-sky-400 rounded-full border-4 border-slate-900 z-10"></div>
+                
+                <div class="md:w-1/2 md:pl-12 mt-4 md:mt-0">
+                    <div class="glass p-6 rounded-2xl md:ml-8">
+                        <ul class="space-y-3 text-slate-300">
+                            <li class="flex items-start">
+                                <i class="fas fa-check text-green-400 mt-1 mr-3"></i>
+                                <span>Designed and deployed AI-powered chatbot with RAG, embeddings, and multi-model routing</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check text-green-400 mt-1 mr-3"></i>
+                                <span>Implemented LLM inference servers using vLLM supporting multiple concurrent models</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check text-green-400 mt-1 mr-3"></i>
+                                <span>Optimized cloud infrastructure, reducing compute costs by 40%</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check text-green-400 mt-1 mr-3"></i>
+                                <span>Architected production deployments across AWS, Azure, and GCP</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
 
-        <div class="glass p-10 rounded-2xl shadow-xl hover:scale-105 transition">
-            <i class="fa-solid fa-robot text-4xl text-sky-400"></i>
-            <h3 class="text-xl font-semibold mt-4">AI & LLM Engineering</h3>
-            <p class="text-slate-300 mt-3">
-                LLM inference (vLLM), RAG pipelines, embeddings, NL-to-SQL models, AI chatbots.
-            </p>
+            <!-- Experience 2 -->
+            <div class="relative mb-16 md:flex items-center">
+                <div class="md:w-1/2 md:pr-12 md:text-right mb-4 md:mb-0 order-2">
+                    <div class="glass p-6 rounded-2xl md:mr-8">
+                        <span class="inline-block px-3 py-1 bg-sky-500/20 text-sky-400 rounded-full text-sm font-semibold mb-2">July 2022 - Dec 2022</span>
+                        <h3 class="text-2xl font-bold">Junior Python Developer</h3>
+                        <p class="text-sky-300 font-medium">Codeland Infosolutions Pvt. Ltd</p>
+                        <p class="text-slate-400">Bengaluru, India</p>
+                    </div>
+                </div>
+                
+                <div class="absolute left-2 md:left-1/2 transform -translate-x-1/2 w-4 h-4 bg-sky-400 rounded-full border-4 border-slate-900 z-10"></div>
+                
+                <div class="md:w-1/2 md:pl-12 mt-4 md:mt-0 order-1">
+                    <div class="glass p-6 rounded-2xl md:ml-8">
+                        <ul class="space-y-3 text-slate-300">
+                            <li class="flex items-start">
+                                <i class="fas fa-check text-green-400 mt-1 mr-3"></i>
+                                <span>Developed Python services and API modules</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check text-green-400 mt-1 mr-3"></i>
+                                <span>Improved front-end interactivity and user engagement</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check text-green-400 mt-1 mr-3"></i>
+                                <span>Reduced server costs by 10% through automated resource optimization</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </section>
 
-<!-- Projects -->
-<section id="projects" class="bg-slate-900/40 py-24 fade-up">
-    <div class="container mx-auto px-6 text-center">
-        <h2 class="text-4xl font-bold">Projects</h2>
+<!-- Contact Section -->
+<section id="contact" class="py-24 fade-up">
+    <div class="container mx-auto px-6">
+        <h2 class="text-4xl font-bold text-center mb-4">Get In Touch</h2>
+        <div class="w-24 h-1 bg-gradient-to-r from-sky-500 to-indigo-500 mx-auto mb-12 rounded-full"></div>
 
-        <div class="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-            <!-- Project Card -->
-            <div class="glass rounded-2xl shadow-lg overflow-hidden hover:scale-105 transition">
-                <img src="https://placehold.co/700x380/0ea5e9/fff?text=AI+Chatbot" class="w-full">
-                <div class="p-6 text-left">
-                    <h3 class="text-xl font-bold">AI Chatbot</h3>
-                    <p class="mt-2 text-slate-300">
-                        Multilingual LLM chatbot using embeddings, RAG & vLLM inference.
-                    </p>
+        <div class="grid md:grid-cols-2 gap-12 max-w-6xl mx-auto">
+            <!-- Contact Info -->
+            <div class="fade-left">
+                <div class="glass rounded-2xl p-8 h-full">
+                    <h3 class="text-2xl font-bold mb-6 gradient-text">Contact Information</h3>
+                    
+                    <div class="space-y-6">
+                        <div class="flex items-start">
+                            <div class="bg-sky-500/20 p-3 rounded-lg mr-4">
+                                <i class="fas fa-envelope text-sky-400 text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold">Email</h4>
+                                <a href="mailto:pavankumarkr98@gmail.com" class="text-slate-300 hover:text-sky-400 transition-colors">
+                                    pavankumarkr98@gmail.com
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="bg-sky-500/20 p-3 rounded-lg mr-4">
+                                <i class="fas fa-phone text-sky-400 text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold">Phone</h4>
+                                <a href="tel:+919945730082" class="text-slate-300 hover:text-sky-400 transition-colors">
+                                    +91 9945730082
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="bg-sky-500/20 p-3 rounded-lg mr-4">
+                                <i class="fas fa-map-marker-alt text-sky-400 text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold">Location</h4>
+                                <p class="text-slate-300">Bengaluru, KA 560091</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="bg-sky-500/20 p-3 rounded-lg mr-4">
+                                <i class="fas fa-clock text-sky-400 text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold">Availability</h4>
+                                <p class="text-slate-300">Open to new opportunities and collaborations</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Social Links -->
+                    <div class="mt-8 pt-8 border-t border-white/10">
+                        <h4 class="font-semibold mb-4">Connect with me</h4>
+                        <div class="flex space-x-4 text-2xl">
+                            <a href="mailto:pavankumarkr98@gmail.com" 
+                               class="bg-slate-800 hover:bg-sky-600 w-12 h-12 rounded-full flex items-center justify-center transition-colors">
+                                <i class="fas fa-envelope"></i>
+                            </a>
+                            <a href="tel:+919945730082" 
+                               class="bg-slate-800 hover:bg-sky-600 w-12 h-12 rounded-full flex items-center justify-center transition-colors">
+                                <i class="fas fa-phone"></i>
+                            </a>
+                            <a href="#" 
+                               class="bg-slate-800 hover:bg-sky-600 w-12 h-12 rounded-full flex items-center justify-center transition-colors">
+                                <i class="fab fa-linkedin-in"></i>
+                            </a>
+                            <a href="#" 
+                               class="bg-slate-800 hover:bg-sky-600 w-12 h-12 rounded-full flex items-center justify-center transition-colors">
+                                <i class="fab fa-github"></i>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="glass rounded-2xl shadow-lg overflow-hidden hover:scale-105 transition">
-                <img src="https://placehold.co/700x380/6366f1/fff?text=Cloud+Optimizer">
-                <div class="p-6 text-left">
-                    <h3 class="text-xl font-bold">Cloud Cost Optimizer</h3>
-                    <p class="mt-2 text-slate-300">
-                        Saved $150K/yr using cloud metrics, auto-scaling & infra tuning.
-                    </p>
-                </div>
-            </div>
-
-            <div class="glass rounded-2xl shadow-lg overflow-hidden hover:scale-105 transition">
-                <img src="https://placehold.co/700x380/14b8a6/fff?text=Analytics+Dashboard">
-                <div class="p-6 text-left">
-                    <h3 class="text-xl font-bold">Real-Time Dashboard</h3>
-                    <p class="mt-2 text-slate-300">
-                        Streaming analytics with Django + React + WebSockets.
-                    </p>
+            <!-- Contact Form -->
+            <div class="fade-right">
+                <div class="glass rounded-2xl p-8 h-full">
+                    <h3 class="text-2xl font-bold mb-6 gradient-text">Send Message</h3>
+                    
+                    <form id="contact-form" class="space-y-6">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Your Name</label>
+                            <input type="text" 
+                                   id="name"
+                                   class="w-full p-4 bg-white/10 rounded-lg border border-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all"
+                                   placeholder="Enter your name"
+                                   required>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Your Email</label>
+                            <input type="email" 
+                                   id="email"
+                                   class="w-full p-4 bg-white/10 rounded-lg border border-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all"
+                                   placeholder="Enter your email"
+                                   required>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Subject</label>
+                            <input type="text" 
+                                   id="subject"
+                                   class="w-full p-4 bg-white/10 rounded-lg border border-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all"
+                                   placeholder="Subject of your message"
+                                   required>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Your Message</label>
+                            <textarea id="message" 
+                                      rows="5"
+                                      class="w-full p-4 bg-white/10 rounded-lg border border-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all"
+                                      placeholder="Your message here..."
+                                      required></textarea>
+                        </div>
+                        
+                        <button type="submit" 
+                                class="w-full py-4 bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-700 hover:to-indigo-700 rounded-lg font-semibold text-lg transition-all duration-300 transform hover:scale-[1.02] flex items-center justify-center">
+                            <i class="fas fa-paper-plane mr-3"></i> Send Message
+                        </button>
+                        
+                        <div id="form-message" class="mt-4 text-center hidden">
+                            <!-- Success/Error message will appear here -->
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
-</section>
-
-<!-- Contact -->
-<section id="contact" class="container mx-auto px-6 py-24 fade-up">
-    <h2 class="text-4xl font-bold text-center">Contact</h2>
-
-    <form class="max-w-2xl mx-auto mt-10 space-y-6 glass p-10 rounded-2xl shadow-xl">
-        <input type="text" placeholder="Your Name" class="w-full p-4 bg-white/10 rounded-lg border border-white/20 focus:ring-2 focus:ring-sky-400">
-        <input type="email" placeholder="Your Email" class="w-full p-4 bg-white/10 rounded-lg border border-white/20 focus:ring-2 focus:ring-sky-400">
-        <textarea rows="4" placeholder="Your Message" class="w-full p-4 bg-white/10 rounded-lg border border-white/20 focus:ring-2 focus:ring-sky-400"></textarea>
-        <button class="w-full py-4 bg-sky-600 hover:bg-sky-700 rounded-lg font-semibold text-lg transition">
-            Send Message
-        </button>
-    </form>
 </section>
 
 <!-- Footer -->
-<footer class="py-10 text-center text-slate-400 text-sm border-t border-slate-700">
-    © 2025 Pavan Kumar KR · AI Engineer Portfolio
+<footer class="py-12 text-center border-t border-slate-800">
+    <div class="container mx-auto px-6">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+            <div class="mb-4 md:mb-0">
+                <h2 class="text-2xl font-bold gradient-text">PavanKR.</h2>
+                <p class="text-slate-400 mt-2">AI Engineer & Full-Stack Developer</p>
+            </div>
+            
+            <div class="flex space-x-6 text-xl mb-4 md:mb-0">
+                <a href="mailto:pavankumarkr98@gmail.com" class="text-slate-400 hover:text-sky-400 transition-colors">
+                    <i class="fas fa-envelope"></i>
+                </a>
+                <a href="tel:+919945730082" class="text-slate-400 hover:text-sky-400 transition-colors">
+                    <i class="fas fa-phone"></i>
+                </a>
+                <a href="#" class="text-slate-400 hover:text-sky-400 transition-colors">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+                <a href="#" class="text-slate-400 hover:text-sky-400 transition-colors">
+                    <i class="fab fa-github"></i>
+                </a>
+            </div>
+        </div>
+        
+        <div class="mt-8 pt-8 border-t border-slate-800">
+            <p class="text-slate-500 text-sm">
+                © 2025 Pavan Kumar KR. All rights reserved.
+                <span class="block md:inline mt-2 md:mt-0">Designed & Built with ❤️ by Pavan</span>
+            </p>
+        </div>
+    </div>
 </footer>
 
 <script>
-    // Reveal Animations
-    const observer = new IntersectionObserver(entries => {
-        entries.forEach(e => {
-            if (e.isIntersecting) e.target.classList.add('visible');
-        });
-    }, { threshold: 0.2 });
+    // Initialize EmailJS (Replace with your actual EmailJS public key)
+    (function() {
+        emailjs.init("YOUR_PUBLIC_KEY"); // Get from EmailJS dashboard
+    })();
 
-    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+    // Mobile menu toggle
+    const menuToggle = document.getElementById('menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    
+    menuToggle.addEventListener('click', () => {
+        mobileMenu.classList.toggle('open');
+        menuToggle.innerHTML = mobileMenu.classList.contains('open') 
+            ? '<i class="fas fa-times"></i>' 
+            : '<i class="fas fa-bars"></i>';
+    });
+
+    // Close mobile menu when clicking a link
+    document.querySelectorAll('#mobile-menu a').forEach(link => {
+        link.addEventListener('click', () => {
+            mobileMenu.classList.remove('open');
+            menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+        });
+    });
+
+    // Scroll animations
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                
+                // Animate skill bars
+                if (entry.target.id === 'skills') {
+                    setTimeout(() => {
+                        document.querySelectorAll('.skill-progress').forEach(bar => {
+                            bar.classList.add('animate');
+                        });
+                    }, 300);
+                }
+            }
+        });
+    }, { threshold: 0.1 });
+
+    // Observe all animated elements
+    document.querySelectorAll('.fade-up, .fade-left, .fade-right').forEach(el => observer.observe(el));
+
+    // Contact form submission
+    document.getElementById('contact-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const form = this;
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const messageDiv = document.getElementById('form-message');
+        
+        // Show loading state
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Sending...';
+        submitBtn.disabled = true;
+        
+        // Prepare template parameters
+        const templateParams = {
+            from_name: document.getElementById('name').value,
+            from_email: document.getElementById('email').value,
+            subject: document.getElementById('subject').value,
+            message: document.getElementById('message').value,
+            to_email: 'pavankumarkr98@gmail.com' // Your email
+        };
+        
+        // Send email using EmailJS
+        emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', templateParams)
+            .then(function(response) {
+                console.log('SUCCESS!', response.status, response.text);
+                
+                // Show success message
+                messageDiv.innerHTML = '<div class="bg-green-500/20 text-green-400 p-4 rounded-lg">Message sent successfully! I\'ll get back to you soon.</div>';
+                messageDiv.classList.remove('hidden');
+                
+                // Reset form
+                form.reset();
+                
+                // Hide message after 5 seconds
+                setTimeout(() => {
+                    messageDiv.classList.add('hidden');
+                }, 5000);
+            }, function(error) {
+                console.log('FAILED...', error);
+                
+                // Show error message
+                messageDiv.innerHTML = '<div class="bg-red-500/20 text-red-400 p-4 rounded-lg">Failed to send message. Please try again or email me directly.</div>';
+                messageDiv.classList.remove('hidden');
+            })
+            .finally(() => {
+                // Reset button state
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            });
+    });
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            if (targetId === '#') return;
+            
+            const targetElement = document.querySelector(targetId);
+            if (targetElement) {
+                window.scrollTo({
+                    top: targetElement.offsetTop - 80,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+
+    // Add typing effect
+    const typingText = "AI Engineer & Full-Stack Developer";
+    let charIndex = 0;
+    const typingElement = document.querySelector('.typing-container');
+    
+    function typeWriter() {
+        if (charIndex < typingText.length) {
+            typingElement.textContent += typingText.charAt(charIndex);
+            charIndex++;
+            setTimeout(typeWriter, 100);
+        }
+    }
+    
+    // Start typing effect after page loads
+    window.addEventListener('load', () => {
+        setTimeout(typeWriter, 1000);
+    });
+
+    // Parallax effect on scroll
+    window.addEventListener('scroll', () => {
+        const scrolled = window.pageYOffset;
+        const parallax = document.querySelector('.hero-bg');
+        if (parallax) {
+            parallax.style.transform = `translateY(${scrolled * 0.5}px)`;
+        }
+    });
 </script>
 
 </body>
