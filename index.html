@@ -899,8 +899,8 @@
 
     // Download resume
     downloadBtn.addEventListener('click', () => {
-        // Replace with your actual resume URL
-        const resumeUrl = 'https://github.com/pavankumarkr98/pavankumarkr98.github.io/blob/base/Pavan%20Kumar-Resume_AI.pdf';
+        // Use RAW GitHub URL for direct download
+        const resumeUrl = 'https://raw.githubusercontent.com/pavankumarkr98/pavankumarkr98.github.io/base/Pavan%20Kumar-Resume_AI.pdf';
         const link = document.createElement('a');
         link.href = resumeUrl;
         link.download = 'Pavan_Kumar_KR_Resume.pdf';
@@ -911,8 +911,8 @@
 
     // Print resume
     printBtn.addEventListener('click', () => {
-        // You can either print the PDF or show a printable version
-        window.open('https://github.com/pavankumarkr98/pavankumarkr98.github.io/blob/base/Pavan%20Kumar-Resume_AI.pdf', '_blank');
+        // Use RAW URL for PDF viewing
+        window.open('https://raw.githubusercontent.com/pavankumarkr98/pavankumarkr98.github.io/base/Pavan%20Kumar-Resume_AI.pdf', '_blank');
     });
 
     // Load PDF preview
@@ -921,8 +921,8 @@
         const fallbackInfo = document.getElementById('resume-fallback');
         
         try {
-            // Replace with your actual PDF URL
-            const pdfUrl = 'https://github.com/pavankumarkr98/pavankumarkr98.github.io/blob/base/Pavan%20Kumar-Resume_AI.pdf';
+            // Use RAW GitHub URL
+            const pdfUrl = 'https://raw.githubusercontent.com/pavankumarkr98/pavankumarkr98.github.io/base/Pavan%20Kumar-Resume_AI.pdf';
             
             // Initialize PDF.js
             const pdfjsLib = window['pdfjs-dist/build/pdf'];
