@@ -14,6 +14,9 @@
     
     <!-- EmailJS for contact form -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    
+    <!-- PDF.js for resume preview -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 
     <style>
         body { 
@@ -150,6 +153,13 @@
         .mobile-menu {
             transform: translateY(-100%);
             transition: transform 0.3s ease-in-out;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: 40;
+            overflow-y: auto;
         }
         
         .mobile-menu.open {
@@ -178,27 +188,124 @@
             left: 100%;
         }
 
-        /* Achievement badge */
-        .achievement-badge {
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 100;
+            overflow-y: auto;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: #0f172a;
+            border-radius: 1rem;
+            width: 90%;
+            max-width: 900px;
+            max-height: 90vh;
+            overflow-y: auto;
             position: relative;
-            overflow: hidden;
+            border: 1px solid rgba(14, 165, 233, 0.2);
         }
         
-        .achievement-badge::after {
-            content: '';
+        #pdf-viewer {
+            width: 100%;
+            height: 70vh;
+            border-radius: 0.5rem;
+            overflow: auto;
+        }
+        
+        .pdf-page {
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+        }
+        
+        .close-modal {
             position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-            transform: rotate(45deg);
-            animation: shine 3s infinite;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(0, 0, 0, 0.7);
+            border: none;
+            color: white;
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 101;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
-        @keyframes shine {
-            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        /* Fix for mobile view */
+        @media (max-width: 768px) {
+            .container {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+            
+            .hero-bg {
+                padding-top: 6rem;
+                padding-bottom: 4rem;
+            }
+            
+            .glass {
+                padding: 1.5rem !important;
+            }
+            
+            .text-5xl {
+                font-size: 2.5rem;
+            }
+            
+            .text-7xl {
+                font-size: 3rem;
+            }
+            
+            .grid-cols-2 {
+                grid-template-columns: 1fr;
+            }
+            
+            #experience .relative > div {
+                margin-left: 0;
+                padding-left: 3rem;
+            }
+            
+            #experience .relative .absolute {
+                left: 1.5rem;
+            }
+            
+            .tech-icons {
+                grid-template-columns: repeat(4, 1fr) !important;
+                gap: 1rem !important;
+            }
+        }
+        
+        /* Fix for small mobile */
+        @media (max-width: 480px) {
+            .text-4xl {
+                font-size: 1.75rem;
+            }
+            
+            .text-2xl {
+                font-size: 1.5rem;
+            }
+            
+            .glass {
+                padding: 1rem !important;
+            }
+            
+            .tech-icons {
+                grid-template-columns: repeat(3, 1fr) !important;
+            }
         }
     </style>
 </head>
@@ -207,16 +314,19 @@
 
 <!-- Navbar -->
 <nav class="fixed top-0 left-0 w-full z-50 bg-slate-900/80 backdrop-blur-lg border-b border-white/10">
-    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+    <div class="container mx-auto px-4 py-4 flex justify-between items-center">
         <h1 class="text-2xl font-bold tracking-wide gradient-text">Pavan.</h1>
         
         <!-- Desktop Menu -->
-        <div class="hidden md:flex space-x-8 text-sm font-medium">
+        <div class="hidden md:flex space-x-8 text-sm font-medium items-center">
             <a href="#about" class="hover:text-sky-400 transition-colors duration-300">About</a>
             <a href="#skills" class="hover:text-sky-400 transition-colors duration-300">Skills</a>
             <a href="#experience" class="hover:text-sky-400 transition-colors duration-300">Experience</a>
             <a href="#projects" class="hover:text-sky-400 transition-colors duration-300">Projects</a>
             <a href="#contact" class="hover:text-sky-400 transition-colors duration-300">Contact</a>
+            <button id="resume-btn-desktop" class="ml-4 px-4 py-2 bg-sky-600 hover:bg-sky-700 rounded-full text-sm font-semibold transition-all duration-300">
+                <i class="fas fa-file-pdf mr-2"></i>Resume
+            </button>
         </div>
         
         <!-- Mobile Menu Button -->
@@ -226,26 +336,89 @@
     </div>
     
     <!-- Mobile Menu -->
-    <div id="mobile-menu" class="mobile-menu absolute top-full left-0 w-full bg-slate-900/95 backdrop-blur-lg border-b border-white/10 md:hidden">
+    <div id="mobile-menu" class="mobile-menu bg-slate-900/95 backdrop-blur-lg border-b border-white/10 md:hidden">
         <div class="flex flex-col space-y-4 p-6">
-            <a href="#about" class="hover:text-sky-400 transition-colors duration-300 py-2">About</a>
-            <a href="#skills" class="hover:text-sky-400 transition-colors duration-300 py-2">Skills</a>
-            <a href="#experience" class="hover:text-sky-400 transition-colors duration-300 py-2">Experience</a>
-            <a href="#projects" class="hover:text-sky-400 transition-colors duration-300 py-2">Projects</a>
-            <a href="#contact" class="hover:text-sky-400 transition-colors duration-300 py-2">Contact</a>
+            <div class="flex justify-between items-center mb-4">
+                <h1 class="text-2xl font-bold gradient-text">Pavan.</h1>
+                <button id="close-menu" class="text-xl">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <a href="#about" class="hover:text-sky-400 transition-colors duration-300 py-3 border-b border-white/10">About</a>
+            <a href="#skills" class="hover:text-sky-400 transition-colors duration-300 py-3 border-b border-white/10">Skills</a>
+            <a href="#experience" class="hover:text-sky-400 transition-colors duration-300 py-3 border-b border-white/10">Experience</a>
+            <a href="#projects" class="hover:text-sky-400 transition-colors duration-300 py-3 border-b border-white/10">Projects</a>
+            <a href="#contact" class="hover:text-sky-400 transition-colors duration-300 py-3 border-b border-white/10">Contact</a>
+            <button id="resume-btn-mobile" class="mt-4 px-6 py-3 bg-sky-600 hover:bg-sky-700 rounded-full font-semibold transition-all duration-300 flex items-center justify-center">
+                <i class="fas fa-file-pdf mr-2"></i>View Resume
+            </button>
         </div>
     </div>
 </nav>
 
+<!-- Resume Modal -->
+<div id="resume-modal" class="modal">
+    <div class="modal-content mx-auto my-auto relative">
+        <button class="close-modal">
+            <i class="fas fa-times"></i>
+        </button>
+        
+        <div class="p-6">
+            <h2 class="text-3xl font-bold text-center mb-2 gradient-text">My Resume</h2>
+            <p class="text-center text-slate-400 mb-6">AI Engineer & Full-Stack Developer</p>
+            
+            <div class="flex flex-wrap gap-4 justify-center mb-6">
+                <button id="download-resume" class="px-6 py-3 bg-green-600 hover:bg-green-700 rounded-full font-semibold transition-all duration-300 flex items-center">
+                    <i class="fas fa-download mr-2"></i>Download PDF
+                </button>
+                <button id="print-resume" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-full font-semibold transition-all duration-300 flex items-center">
+                    <i class="fas fa-print mr-2"></i>Print
+                </button>
+            </div>
+            
+            <!-- PDF Viewer -->
+            <div id="pdf-viewer" class="bg-white rounded-lg p-2">
+                <div class="text-center py-8 text-slate-400">
+                    <i class="fas fa-spinner fa-spin text-4xl mb-4"></i>
+                    <p>Loading resume preview...</p>
+                </div>
+            </div>
+            
+            <!-- Fallback resume info -->
+            <div id="resume-fallback" class="mt-6 p-6 glass rounded-xl hidden">
+                <h3 class="text-xl font-bold mb-4">Resume Summary</h3>
+                <div class="space-y-4">
+                    <div>
+                        <h4 class="font-semibold text-sky-400">Experience</h4>
+                        <p>3.6+ years as AI Engineer & Full-Stack Developer</p>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-sky-400">Skills</h4>
+                        <p>LLM/RAG, Python, Java, C#, Cloud Architecture, DevOps, Microservices</p>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-sky-400">Education</h4>
+                        <p>BE in Civil Engineering</p>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-sky-400">Contact</h4>
+                        <p>pavankumarkr98@gmail.com | +91 9945730082 | Bengaluru, KA</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Hero Section -->
-<header class="hero-bg py-32 md:py-40 text-center relative overflow-hidden">
+<header class="hero-bg pt-24 pb-20 md:py-32 text-center relative overflow-hidden">
     <div class="absolute inset-0">
         <!-- Animated background elements -->
         <div class="absolute top-1/4 left-1/4 w-64 h-64 bg-sky-500/10 rounded-full blur-3xl floating"></div>
         <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl floating" style="animation-delay: -3s;"></div>
     </div>
 
-    <div class="relative z-10 px-4">
+    <div class="relative z-10 px-4 container mx-auto">
         <div class="inline-block mb-4 px-4 py-2 glass rounded-full text-sm">
             <span class="typing-container">
                 AI Engineer & Full-Stack Developer
@@ -253,81 +426,85 @@
             </span>
         </div>
         
-        <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight">
+        <h1 class="text-4xl md:text-5xl lg:text-7xl font-extrabold tracking-tight">
             Pavan Kumar <span class="gradient-text">KR</span>
         </h1>
         
-        <p class="mt-6 text-xl md:text-2xl text-slate-300 font-light max-w-3xl mx-auto">
+        <p class="mt-4 md:mt-6 text-lg md:text-xl lg:text-2xl text-slate-300 font-light max-w-3xl mx-auto">
             Building intelligent systems with LLMs, RAG, cloud architecture & scalable microservices
         </p>
         
-        <div class="mt-12 flex flex-col sm:flex-row gap-4 justify-center">
+        <div class="mt-8 md:mt-12 flex flex-col sm:flex-row gap-4 justify-center">
             <a href="#contact" 
-               class="px-8 py-4 bg-sky-600 hover:bg-sky-700 rounded-full shadow-xl text-lg font-semibold transition-all duration-300 hover:scale-105 pulse-glow">
+               class="px-6 py-3 md:px-8 md:py-4 bg-sky-600 hover:bg-sky-700 rounded-full shadow-xl text-base md:text-lg font-semibold transition-all duration-300 hover:scale-105 pulse-glow flex items-center justify-center">
                 <i class="fas fa-paper-plane mr-2"></i>Let's Connect
             </a>
+            <button id="resume-btn-hero" 
+                    class="px-6 py-3 md:px-8 md:py-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 rounded-full shadow-xl text-base md:text-lg font-semibold transition-all duration-300 hover:scale-105 flex items-center justify-center">
+                <i class="fas fa-file-pdf mr-2"></i>View Resume
+            </button>
         </div>
         
         <!-- Stats -->
-        <div class="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-2xl mx-auto">
+        <div class="mt-12 md:mt-16 grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 max-w-2xl mx-auto">
             <div class="glass p-4 rounded-xl text-center">
-                <div class="text-2xl font-bold text-sky-400">3.6+</div>
-                <div class="text-sm text-slate-400">Years Experience</div>
+                <div class="text-xl md:text-2xl font-bold text-sky-400">3.6+</div>
+                <div class="text-xs md:text-sm text-slate-400">Years Experience</div>
             </div>
             <div class="glass p-4 rounded-xl text-center">
-                <div class="text-2xl font-bold text-sky-400">8+</div>
-                <div class="text-sm text-slate-400">Projects Delivered</div>
+                <div class="text-xl md:text-2xl font-bold text-sky-400">8+</div>
+                <div class="text-xs md:text-sm text-slate-400">Projects Delivered</div>
             </div>
             <div class="glass p-4 rounded-xl text-center">
-                <div class="text-2xl font-bold text-sky-400">40%</div>
-                <div class="text-sm text-slate-400">Cost Reduced</div>
+                <div class="text-xl md:text-2xl font-bold text-sky-400">40%</div>
+                <div class="text-xs md:text-sm text-slate-400">Cost Reduced</div>
             </div>
             <div class="glass p-4 rounded-xl text-center">
-                <div class="text-2xl font-bold text-sky-400">100%</div>
-                <div class="text-sm text-slate-400">Client Satisfaction</div>
+                <div class="text-xl md:text-2xl font-bold text-sky-400">100%</div>
+                <div class="text-xs md:text-sm text-slate-400">Client Satisfaction</div>
             </div>
         </div>
     </div>
     
     <!-- Scroll indicator -->
-    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2">
+    <div class="absolute bottom-4 md:bottom-8 left-1/2 transform -translate-x-1/2">
         <a href="#about" class="animate-bounce">
-            <i class="fas fa-chevron-down text-2xl text-sky-400"></i>
+            <i class="fas fa-chevron-down text-xl md:text-2xl text-sky-400"></i>
         </a>
     </div>
 </header>
 
 <!-- About Section -->
-<section id="about" class="container mx-auto px-6 py-24 fade-up">
+<section id="about" class="container mx-auto px-4 md:px-6 py-12 md:py-24 fade-up">
     <div class="max-w-6xl mx-auto">
-        <h2 class="text-4xl font-bold text-center mb-4">About Me</h2>
-        <div class="w-24 h-1 bg-gradient-to-r from-sky-500 to-indigo-500 mx-auto mb-12 rounded-full"></div>
+        <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">About Me</h2>
+        <div class="w-24 h-1 bg-gradient-to-r from-sky-500 to-indigo-500 mx-auto mb-8 md:mb-12 rounded-full"></div>
         
-        <div class="grid md:grid-cols-2 gap-12 items-center">
+        <div class="grid md:grid-cols-2 gap-6 md:gap-12 items-center">
             <div class="fade-left">
-                <div class="glass rounded-2xl p-8">
-                    <h3 class="text-2xl font-bold mb-4 gradient-text">Professional Summary</h3>
-                    <p class="text-slate-300 leading-relaxed">
+                <div class="glass rounded-2xl p-6 md:p-8">
+                    <h3 class="text-xl md:text-2xl font-bold mb-4 gradient-text">Professional Summary</h3>
+                    <p class="text-slate-300 leading-relaxed text-sm md:text-base">
                         AI Engineer and Full-Stack Developer with <span class="text-sky-400 font-semibold">3.6+ years</span> of experience building scalable applications, deploying AI/LLM systems, and architecting cloud-based solutions. Strong expertise in LLM inference, RAG pipelines, vector databases, chatbot development, and multi-model orchestration.
                     </p>
-                    <p class="text-slate-300 leading-relaxed mt-4">
+                    <p class="text-slate-300 leading-relaxed mt-4 text-sm md:text-base">
                         Proven ability to own end-to-end product development—from backend microservices to infrastructure, CI/CD, and production support. Collaborated directly with leadership to drive technical strategy and deliver business-impactful AI solutions.
                     </p>
                     
-                    <div class="mt-8 grid grid-cols-2 gap-4">
-                        <div class="flex items-center">
+                    <div class="mt-6 md:mt-8 grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+                        <div class="flex items-center text-sm md:text-base">
                             <i class="fas fa-map-marker-alt text-sky-400 mr-3"></i>
                             <span>Bengaluru, KA 560091</span>
                         </div>
-                        <div class="flex items-center">
+                        <div class="flex items-center text-sm md:text-base">
                             <i class="fas fa-envelope text-sky-400 mr-3"></i>
                             <span>pavankumarkr98@gmail.com</span>
                         </div>
-                        <div class="flex items-center">
+                        <div class="flex items-center text-sm md:text-base">
                             <i class="fas fa-phone text-sky-400 mr-3"></i>
                             <span>+91 9945730082</span>
                         </div>
-                        <div class="flex items-center">
+                        <div class="flex items-center text-sm md:text-base">
                             <i class="fas fa-graduation-cap text-sky-400 mr-3"></i>
                             <span>BE in Civil Engineering</span>
                         </div>
@@ -335,14 +512,14 @@
                 </div>
             </div>
             
-            <div class="fade-right">
-                <div class="glass rounded-2xl p-8">
-                    <h3 class="text-2xl font-bold mb-6 gradient-text">Core Expertise</h3>
+            <div class="fade-right mt-6 md:mt-0">
+                <div class="glass rounded-2xl p-6 md:p-8">
+                    <h3 class="text-xl md:text-2xl font-bold mb-4 md:mb-6 gradient-text">Core Expertise</h3>
                     
-                    <div class="space-y-6">
+                    <div class="space-y-4 md:space-y-6">
                         <div>
                             <div class="flex justify-between mb-2">
-                                <span class="font-medium">AI/LLM Engineering</span>
+                                <span class="font-medium text-sm md:text-base">AI/LLM Engineering</span>
                                 <span class="text-sky-400">90%</span>
                             </div>
                             <div class="skill-bar">
@@ -352,7 +529,7 @@
                         
                         <div>
                             <div class="flex justify-between mb-2">
-                                <span class="font-medium">Cloud & DevOps</span>
+                                <span class="font-medium text-sm md:text-base">Cloud & DevOps</span>
                                 <span class="text-sky-400">85%</span>
                             </div>
                             <div class="skill-bar">
@@ -362,7 +539,7 @@
                         
                         <div>
                             <div class="flex justify-between mb-2">
-                                <span class="font-medium">Full-Stack Development</span>
+                                <span class="font-medium text-sm md:text-base">Full-Stack Development</span>
                                 <span class="text-sky-400">88%</span>
                             </div>
                             <div class="skill-bar">
@@ -372,7 +549,7 @@
                         
                         <div>
                             <div class="flex justify-between mb-2">
-                                <span class="font-medium">System Architecture</span>
+                                <span class="font-medium text-sm md:text-base">System Architecture</span>
                                 <span class="text-sky-400">82%</span>
                             </div>
                             <div class="skill-bar">
@@ -387,105 +564,105 @@
 </section>
 
 <!-- Skills Section -->
-<section id="skills" class="bg-slate-900/50 py-24 fade-up">
-    <div class="container mx-auto px-6">
-        <h2 class="text-4xl font-bold text-center mb-4">Skills & Technologies</h2>
-        <div class="w-24 h-1 bg-gradient-to-r from-sky-500 to-indigo-500 mx-auto mb-12 rounded-full"></div>
+<section id="skills" class="bg-slate-900/50 py-12 md:py-24 fade-up">
+    <div class="container mx-auto px-4 md:px-6">
+        <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">Skills & Technologies</h2>
+        <div class="w-24 h-1 bg-gradient-to-r from-sky-500 to-indigo-500 mx-auto mb-8 md:mb-12 rounded-full"></div>
 
-        <div class="grid md:grid-cols-3 gap-8">
+        <div class="grid md:grid-cols-3 gap-6 md:gap-8">
             <!-- AI/ML Skills -->
-            <div class="glass p-8 rounded-2xl">
-                <div class="text-4xl text-sky-400 mb-4">
+            <div class="glass p-6 md:p-8 rounded-2xl">
+                <div class="text-3xl md:text-4xl text-sky-400 mb-4">
                     <i class="fas fa-robot"></i>
                 </div>
-                <h3 class="text-xl font-bold mb-6">AI / LLM / ML</h3>
-                <div class="space-y-3">
+                <h3 class="text-lg md:text-xl font-bold mb-4 md:mb-6">AI / LLM / ML</h3>
+                <div class="space-y-2 md:space-y-3">
                     <div class="flex items-center">
-                        <i class="fas fa-check text-green-400 mr-3"></i>
-                        <span>LLM Inference & Optimization (vLLM, HuggingFace)</span>
+                        <i class="fas fa-check text-green-400 mr-3 text-sm"></i>
+                        <span class="text-sm md:text-base">LLM Inference & Optimization (vLLM, HuggingFace)</span>
                     </div>
                     <div class="flex items-center">
-                        <i class="fas fa-check text-green-400 mr-3"></i>
-                        <span>RAG Systems & Vector Databases (Weaviate)</span>
+                        <i class="fas fa-check text-green-400 mr-3 text-sm"></i>
+                        <span class="text-sm md:text-base">RAG Systems & Vector Databases (Weaviate)</span>
                     </div>
                     <div class="flex items-center">
-                        <i class="fas fa-check text-green-400 mr-3"></i>
-                        <span>Prompt Engineering & Fine-tuning</span>
+                        <i class="fas fa-check text-green-400 mr-3 text-sm"></i>
+                        <span class="text-sm md:text-base">Prompt Engineering & Fine-tuning</span>
                     </div>
                     <div class="flex items-center">
-                        <i class="fas fa-check text-green-400 mr-3"></i>
-                        <span>Multi-model Orchestration & Agents</span>
+                        <i class="fas fa-check text-green-400 mr-3 text-sm"></i>
+                        <span class="text-sm md:text-base">Multi-model Orchestration & Agents</span>
                     </div>
                     <div class="flex items-center">
-                        <i class="fas fa-check text-green-400 mr-3"></i>
-                        <span>NLP Tasks & Embeddings</span>
+                        <i class="fas fa-check text-green-400 mr-3 text-sm"></i>
+                        <span class="text-sm md:text-base">NLP Tasks & Embeddings</span>
                     </div>
                 </div>
             </div>
 
             <!-- Technical Skills -->
-            <div class="glass p-8 rounded-2xl">
-                <div class="text-4xl text-sky-400 mb-4">
+            <div class="glass p-6 md:p-8 rounded-2xl">
+                <div class="text-3xl md:text-4xl text-sky-400 mb-4">
                     <i class="fas fa-code"></i>
                 </div>
-                <h3 class="text-xl font-bold mb-6">Technical Stack</h3>
-                <div class="space-y-3">
+                <h3 class="text-lg md:text-xl font-bold mb-4 md:mb-6">Technical Stack</h3>
+                <div class="space-y-2 md:space-y-3">
                     <div class="flex items-center">
-                        <i class="fas fa-check text-green-400 mr-3"></i>
-                        <span>Python, Java, C#, JavaScript, TypeScript</span>
+                        <i class="fas fa-check text-green-400 mr-3 text-sm"></i>
+                        <span class="text-sm md:text-base">Python, Java, C#, JavaScript, TypeScript</span>
                     </div>
                     <div class="flex items-center">
-                        <i class="fas fa-check text-green-400 mr-3"></i>
-                        <span>Django, FastAPI, Spring Boot, .NET, React</span>
+                        <i class="fas fa-check text-green-400 mr-3 text-sm"></i>
+                        <span class="text-sm md:text-base">Django, FastAPI, Spring Boot, .NET, React</span>
                     </div>
                     <div class="flex items-center">
-                        <i class="fas fa-check text-green-400 mr-3"></i>
-                        <span>PostgreSQL, MySQL, MongoDB, NoSQL</span>
+                        <i class="fas fa-check text-green-400 mr-3 text-sm"></i>
+                        <span class="text-sm md:text-base">PostgreSQL, MySQL, MongoDB, NoSQL</span>
                     </div>
                     <div class="flex items-center">
-                        <i class="fas fa-check text-green-400 mr-3"></i>
-                        <span>AWS, Azure, GCP Cloud Platforms</span>
+                        <i class="fas fa-check text-green-400 mr-3 text-sm"></i>
+                        <span class="text-sm md:text-base">AWS, Azure, GCP Cloud Platforms</span>
                     </div>
                     <div class="flex items-center">
-                        <i class="fas fa-check text-green-400 mr-3"></i>
-                        <span>Docker, Nginx, Apache, Jenkins</span>
+                        <i class="fas fa-check text-green-400 mr-3 text-sm"></i>
+                        <span class="text-sm md:text-base">Docker, Nginx, Apache, Jenkins</span>
                     </div>
                 </div>
             </div>
 
             <!-- Tools & Platforms -->
-            <div class="glass p-8 rounded-2xl">
-                <div class="text-4xl text-sky-400 mb-4">
+            <div class="glass p-6 md:p-8 rounded-2xl">
+                <div class="text-3xl md:text-4xl text-sky-400 mb-4">
                     <i class="fas fa-tools"></i>
                 </div>
-                <h3 class="text-xl font-bold mb-6">Tools & Platforms</h3>
-                <div class="space-y-3">
+                <h3 class="text-lg md:text-xl font-bold mb-4 md:mb-6">Tools & Platforms</h3>
+                <div class="space-y-2 md:space-y-3">
                     <div class="flex items-center">
-                        <i class="fas fa-check text-green-400 mr-3"></i>
-                        <span>GitHub, Bitbucket, GitLab</span>
+                        <i class="fas fa-check text-green-400 mr-3 text-sm"></i>
+                        <span class="text-sm md:text-base">GitHub, Bitbucket, GitLab</span>
                     </div>
                     <div class="flex items-center">
-                        <i class="fas fa-check text-green-400 mr-3"></i>
-                        <span>Apache Solr, Elasticsearch</span>
+                        <i class="fas fa-check text-green-400 mr-3 text-sm"></i>
+                        <span class="text-sm md:text-base">Apache Solr, Elasticsearch</span>
                     </div>
                     <div class="flex items-center">
-                        <i class="fas fa-check text-green-400 mr-3"></i>
-                        <span>n8n Workflow Automation</span>
+                        <i class="fas fa-check text-green-400 mr-3 text-sm"></i>
+                        <span class="text-sm md:text-base">n8n Workflow Automation</span>
                     </div>
                     <div class="flex items-center">
-                        <i class="fas fa-check text-green-400 mr-3"></i>
-                        <span>TensorRT-LLM, ONNX</span>
+                        <i class="fas fa-check text-green-400 mr-3 text-sm"></i>
+                        <span class="text-sm md:text-base">TensorRT-LLM, ONNX</span>
                     </div>
                     <div class="flex items-center">
-                        <i class="fas fa-check text-green-400 mr-3"></i>
-                        <span>NumPy, Pandas, scikit-learn</span>
+                        <i class="fas fa-check text-green-400 mr-3 text-sm"></i>
+                        <span class="text-sm md:text-base">NumPy, Pandas, scikit-learn</span>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Tech Icons -->
-        <div class="mt-16 grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-6 text-4xl text-center">
+        <div class="mt-12 md:mt-16 grid grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-4 md:gap-6 text-2xl md:text-3xl lg:text-4xl text-center tech-icons">
             <i class="devicon-python-plain colored hover:scale-125 transition-transform duration-300" title="Python"></i>
             <i class="devicon-react-original colored hover:scale-125 transition-transform duration-300" title="React"></i>
             <i class="devicon-django-plain colored hover:scale-125 transition-transform duration-300" title="Django"></i>
@@ -497,111 +674,26 @@
         </div>
     </div>
 </section>
-
-<!-- Experience Section -->
-<section id="experience" class="container mx-auto px-6 py-24 fade-up">
-    <div class="max-w-6xl mx-auto">
-        <h2 class="text-4xl font-bold text-center mb-4">Work Experience</h2>
-        <div class="w-24 h-1 bg-gradient-to-r from-sky-500 to-indigo-500 mx-auto mb-12 rounded-full"></div>
-
-        <!-- Timeline -->
-        <div class="relative">
-            <!-- Timeline line -->
-            <div class="absolute left-4 md:left-1/2 transform md:-translate-x-1/2 h-full w-1 bg-gradient-to-b from-sky-500 to-indigo-500"></div>
-
-            <!-- Experience 1 -->
-            <div class="relative mb-16 md:flex items-center">
-                <div class="md:w-1/2 md:pr-12 md:text-right mb-4 md:mb-0">
-                    <div class="glass p-6 rounded-2xl md:mr-8">
-                        <span class="inline-block px-3 py-1 bg-sky-500/20 text-sky-400 rounded-full text-sm font-semibold mb-2">Dec 2022 - Present</span>
-                        <h3 class="text-2xl font-bold">Full Stack Developer + Principal Engineer</h3>
-                        <p class="text-sky-300 font-medium">Codeland Infosolutions Pvt. Ltd</p>
-                        <p class="text-slate-400">Bengaluru, India</p>
-                    </div>
-                </div>
-                
-                <div class="absolute left-2 md:left-1/2 transform -translate-x-1/2 w-4 h-4 bg-sky-400 rounded-full border-4 border-slate-900 z-10"></div>
-                
-                <div class="md:w-1/2 md:pl-12 mt-4 md:mt-0">
-                    <div class="glass p-6 rounded-2xl md:ml-8">
-                        <ul class="space-y-3 text-slate-300">
-                            <li class="flex items-start">
-                                <i class="fas fa-check text-green-400 mt-1 mr-3"></i>
-                                <span>Designed and deployed AI-powered chatbot with RAG, embeddings, and multi-model routing</span>
-                            </li>
-                            <li class="flex items-start">
-                                <i class="fas fa-check text-green-400 mt-1 mr-3"></i>
-                                <span>Implemented LLM inference servers using vLLM supporting multiple concurrent models</span>
-                            </li>
-                            <li class="flex items-start">
-                                <i class="fas fa-check text-green-400 mt-1 mr-3"></i>
-                                <span>Optimized cloud infrastructure, reducing compute costs by 40%</span>
-                            </li>
-                            <li class="flex items-start">
-                                <i class="fas fa-check text-green-400 mt-1 mr-3"></i>
-                                <span>Architected production deployments across AWS, Azure, and GCP</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Experience 2 -->
-            <div class="relative mb-16 md:flex items-center">
-                <div class="md:w-1/2 md:pr-12 md:text-right mb-4 md:mb-0 order-2">
-                    <div class="glass p-6 rounded-2xl md:mr-8">
-                        <span class="inline-block px-3 py-1 bg-sky-500/20 text-sky-400 rounded-full text-sm font-semibold mb-2">July 2022 - Dec 2022</span>
-                        <h3 class="text-2xl font-bold">Junior Python Developer</h3>
-                        <p class="text-sky-300 font-medium">Codeland Infosolutions Pvt. Ltd</p>
-                        <p class="text-slate-400">Bengaluru, India</p>
-                    </div>
-                </div>
-                
-                <div class="absolute left-2 md:left-1/2 transform -translate-x-1/2 w-4 h-4 bg-sky-400 rounded-full border-4 border-slate-900 z-10"></div>
-                
-                <div class="md:w-1/2 md:pl-12 mt-4 md:mt-0 order-1">
-                    <div class="glass p-6 rounded-2xl md:ml-8">
-                        <ul class="space-y-3 text-slate-300">
-                            <li class="flex items-start">
-                                <i class="fas fa-check text-green-400 mt-1 mr-3"></i>
-                                <span>Developed Python services and API modules</span>
-                            </li>
-                            <li class="flex items-start">
-                                <i class="fas fa-check text-green-400 mt-1 mr-3"></i>
-                                <span>Improved front-end interactivity and user engagement</span>
-                            </li>
-                            <li class="flex items-start">
-                                <i class="fas fa-check text-green-400 mt-1 mr-3"></i>
-                                <span>Reduced server costs by 10% through automated resource optimization</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
 <!-- Contact Section -->
-<section id="contact" class="py-24 fade-up">
-    <div class="container mx-auto px-6">
-        <h2 class="text-4xl font-bold text-center mb-4">Get In Touch</h2>
-        <div class="w-24 h-1 bg-gradient-to-r from-sky-500 to-indigo-500 mx-auto mb-12 rounded-full"></div>
+<section id="contact" class="py-12 md:py-24 fade-up">
+    <div class="container mx-auto px-4 md:px-6">
+        <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">Get In Touch</h2>
+        <div class="w-24 h-1 bg-gradient-to-r from-sky-500 to-indigo-500 mx-auto mb-8 md:mb-12 rounded-full"></div>
 
-        <div class="grid md:grid-cols-2 gap-12 max-w-6xl mx-auto">
+        <div class="grid md:grid-cols-2 gap-6 md:gap-12 max-w-6xl mx-auto">
             <!-- Contact Info -->
             <div class="fade-left">
-                <div class="glass rounded-2xl p-8 h-full">
-                    <h3 class="text-2xl font-bold mb-6 gradient-text">Contact Information</h3>
+                <div class="glass rounded-2xl p-6 md:p-8 h-full">
+                    <h3 class="text-xl md:text-2xl font-bold mb-4 md:mb-6 gradient-text">Contact Information</h3>
                     
-                    <div class="space-y-6">
+                    <div class="space-y-4 md:space-y-6">
                         <div class="flex items-start">
                             <div class="bg-sky-500/20 p-3 rounded-lg mr-4">
-                                <i class="fas fa-envelope text-sky-400 text-xl"></i>
+                                <i class="fas fa-envelope text-sky-400 text-lg md:text-xl"></i>
                             </div>
                             <div>
-                                <h4 class="font-semibold">Email</h4>
-                                <a href="mailto:pavankumarkr98@gmail.com" class="text-slate-300 hover:text-sky-400 transition-colors">
+                                <h4 class="font-semibold text-sm md:text-base">Email</h4>
+                                <a href="mailto:pavankumarkr98@gmail.com" class="text-slate-300 hover:text-sky-400 transition-colors text-sm md:text-base">
                                     pavankumarkr98@gmail.com
                                 </a>
                             </div>
@@ -609,11 +701,11 @@
                         
                         <div class="flex items-start">
                             <div class="bg-sky-500/20 p-3 rounded-lg mr-4">
-                                <i class="fas fa-phone text-sky-400 text-xl"></i>
+                                <i class="fas fa-phone text-sky-400 text-lg md:text-xl"></i>
                             </div>
                             <div>
-                                <h4 class="font-semibold">Phone</h4>
-                                <a href="tel:+919945730082" class="text-slate-300 hover:text-sky-400 transition-colors">
+                                <h4 class="font-semibold text-sm md:text-base">Phone</h4>
+                                <a href="tel:+919945730082" class="text-slate-300 hover:text-sky-400 transition-colors text-sm md:text-base">
                                     +91 9945730082
                                 </a>
                             </div>
@@ -621,43 +713,43 @@
                         
                         <div class="flex items-start">
                             <div class="bg-sky-500/20 p-3 rounded-lg mr-4">
-                                <i class="fas fa-map-marker-alt text-sky-400 text-xl"></i>
+                                <i class="fas fa-map-marker-alt text-sky-400 text-lg md:text-xl"></i>
                             </div>
                             <div>
-                                <h4 class="font-semibold">Location</h4>
-                                <p class="text-slate-300">Bengaluru, KA 560091</p>
+                                <h4 class="font-semibold text-sm md:text-base">Location</h4>
+                                <p class="text-slate-300 text-sm md:text-base">Bengaluru, KA 560091</p>
                             </div>
                         </div>
                         
                         <div class="flex items-start">
                             <div class="bg-sky-500/20 p-3 rounded-lg mr-4">
-                                <i class="fas fa-clock text-sky-400 text-xl"></i>
+                                <i class="fas fa-clock text-sky-400 text-lg md:text-xl"></i>
                             </div>
                             <div>
-                                <h4 class="font-semibold">Availability</h4>
-                                <p class="text-slate-300">Open to new opportunities and collaborations</p>
+                                <h4 class="font-semibold text-sm md:text-base">Availability</h4>
+                                <p class="text-slate-300 text-sm md:text-base">Open to new opportunities and collaborations</p>
                             </div>
                         </div>
                     </div>
                     
                     <!-- Social Links -->
-                    <div class="mt-8 pt-8 border-t border-white/10">
-                        <h4 class="font-semibold mb-4">Connect with me</h4>
-                        <div class="flex space-x-4 text-2xl">
+                    <div class="mt-6 md:mt-8 pt-6 md:pt-8 border-t border-white/10">
+                        <h4 class="font-semibold mb-4 text-sm md:text-base">Connect with me</h4>
+                        <div class="flex space-x-3 md:space-x-4 text-xl">
                             <a href="mailto:pavankumarkr98@gmail.com" 
-                               class="bg-slate-800 hover:bg-sky-600 w-12 h-12 rounded-full flex items-center justify-center transition-colors">
+                               class="bg-slate-800 hover:bg-sky-600 w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center transition-colors">
                                 <i class="fas fa-envelope"></i>
                             </a>
                             <a href="tel:+919945730082" 
-                               class="bg-slate-800 hover:bg-sky-600 w-12 h-12 rounded-full flex items-center justify-center transition-colors">
+                               class="bg-slate-800 hover:bg-sky-600 w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center transition-colors">
                                 <i class="fas fa-phone"></i>
                             </a>
                             <a href="https://www.linkedin.com/in/pavan-kumar-k-r-a92337237" 
-                               class="bg-slate-800 hover:bg-sky-600 w-12 h-12 rounded-full flex items-center justify-center transition-colors">
+                               class="bg-slate-800 hover:bg-sky-600 w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center transition-colors">
                                 <i class="fab fa-linkedin-in"></i>
                             </a>
                             <a href="https://github.com/pavankumarkr98" 
-                               class="bg-slate-800 hover:bg-sky-600 w-12 h-12 rounded-full flex items-center justify-center transition-colors">
+                               class="bg-slate-800 hover:bg-sky-600 w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center transition-colors">
                                 <i class="fab fa-github"></i>
                             </a>
                         </div>
@@ -666,16 +758,16 @@
             </div>
 
             <!-- Contact Form -->
-            <div class="fade-right">
-                <div class="glass rounded-2xl p-8 h-full">
-                    <h3 class="text-2xl font-bold mb-6 gradient-text">Send Message</h3>
+            <div class="fade-right mt-6 md:mt-0">
+                <div class="glass rounded-2xl p-6 md:p-8 h-full">
+                    <h3 class="text-xl md:text-2xl font-bold mb-4 md:mb-6 gradient-text">Send Message</h3>
                     
-                    <form id="contact-form" class="space-y-6">
+                    <form id="contact-form" class="space-y-4 md:space-y-6">
                         <div>
                             <label class="block text-sm font-medium mb-2">Your Name</label>
                             <input type="text" 
                                    id="name"
-                                   class="w-full p-4 bg-white/10 rounded-lg border border-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all"
+                                   class="w-full p-3 md:p-4 bg-white/10 rounded-lg border border-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all text-sm md:text-base"
                                    placeholder="Enter your name"
                                    required>
                         </div>
@@ -684,7 +776,7 @@
                             <label class="block text-sm font-medium mb-2">Your Email</label>
                             <input type="email" 
                                    id="email"
-                                   class="w-full p-4 bg-white/10 rounded-lg border border-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all"
+                                   class="w-full p-3 md:p-4 bg-white/10 rounded-lg border border-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all text-sm md:text-base"
                                    placeholder="Enter your email"
                                    required>
                         </div>
@@ -693,7 +785,7 @@
                             <label class="block text-sm font-medium mb-2">Subject</label>
                             <input type="text" 
                                    id="subject"
-                                   class="w-full p-4 bg-white/10 rounded-lg border border-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all"
+                                   class="w-full p-3 md:p-4 bg-white/10 rounded-lg border border-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all text-sm md:text-base"
                                    placeholder="Subject of your message"
                                    required>
                         </div>
@@ -701,14 +793,14 @@
                         <div>
                             <label class="block text-sm font-medium mb-2">Your Message</label>
                             <textarea id="message" 
-                                      rows="5"
-                                      class="w-full p-4 bg-white/10 rounded-lg border border-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all"
+                                      rows="4"
+                                      class="w-full p-3 md:p-4 bg-white/10 rounded-lg border border-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all text-sm md:text-base"
                                       placeholder="Your message here..."
                                       required></textarea>
                         </div>
                         
                         <button type="submit" 
-                                class="w-full py-4 bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-700 hover:to-indigo-700 rounded-lg font-semibold text-lg transition-all duration-300 transform hover:scale-[1.02] flex items-center justify-center">
+                                class="w-full py-3 md:py-4 bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-700 hover:to-indigo-700 rounded-lg font-semibold text-base md:text-lg transition-all duration-300 transform hover:scale-[1.02] flex items-center justify-center">
                             <i class="fas fa-paper-plane mr-3"></i> Send Message
                         </button>
                         
@@ -723,32 +815,32 @@
 </section>
 
 <!-- Footer -->
-<footer class="py-12 text-center border-t border-slate-800">
-    <div class="container mx-auto px-6">
+<footer class="py-8 md:py-12 text-center border-t border-slate-800">
+    <div class="container mx-auto px-4 md:px-6">
         <div class="flex flex-col md:flex-row justify-between items-center">
             <div class="mb-4 md:mb-0">
                 <h2 class="text-2xl font-bold gradient-text">PavanKR.</h2>
-                <p class="text-slate-400 mt-2">AI Engineer & Full-Stack Developer</p>
+                <p class="text-slate-400 mt-2 text-sm md:text-base">AI Engineer & Full-Stack Developer</p>
             </div>
             
-            <div class="flex space-x-6 text-xl mb-4 md:mb-0">
+            <div class="flex space-x-4 md:space-x-6 text-xl mb-4 md:mb-0">
                 <a href="mailto:pavankumarkr98@gmail.com" class="text-slate-400 hover:text-sky-400 transition-colors">
                     <i class="fas fa-envelope"></i>
                 </a>
                 <a href="tel:+919945730082" class="text-slate-400 hover:text-sky-400 transition-colors">
                     <i class="fas fa-phone"></i>
                 </a>
-                <a href="#" class="text-slate-400 hover:text-sky-400 transition-colors">
+                <a href="https://www.linkedin.com/in/pavan-kumar-k-r-a92337237" class="text-slate-400 hover:text-sky-400 transition-colors">
                     <i class="fab fa-linkedin"></i>
                 </a>
-                <a href="#" class="text-slate-400 hover:text-sky-400 transition-colors">
+                <a href="https://github.com/pavankumarkr98" class="text-slate-400 hover:text-sky-400 transition-colors">
                     <i class="fab fa-github"></i>
                 </a>
             </div>
         </div>
         
-        <div class="mt-8 pt-8 border-t border-slate-800">
-            <p class="text-slate-500 text-sm">
+        <div class="mt-6 md:mt-8 pt-6 md:pt-8 border-t border-slate-800">
+            <p class="text-slate-500 text-xs md:text-sm">
                 © 2025 Pavan Kumar KR. All rights reserved.
                 <span class="block md:inline mt-2 md:mt-0">Designed & Built with ❤️ by Pavan</span>
             </p>
@@ -757,29 +849,132 @@
 </footer>
 
 <script>
-    // Initialize EmailJS (Replace with your actual EmailJS public key)
-    (function() {
-        emailjs.init("YOUR_PUBLIC_KEY"); // Get from EmailJS dashboard
-    })();
-
     // Mobile menu toggle
     const menuToggle = document.getElementById('menu-toggle');
     const mobileMenu = document.getElementById('mobile-menu');
+    const closeMenu = document.getElementById('close-menu');
     
     menuToggle.addEventListener('click', () => {
         mobileMenu.classList.toggle('open');
-        menuToggle.innerHTML = mobileMenu.classList.contains('open') 
-            ? '<i class="fas fa-times"></i>' 
-            : '<i class="fas fa-bars"></i>';
+        document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+    });
+    
+    closeMenu.addEventListener('click', () => {
+        mobileMenu.classList.remove('open');
+        document.body.style.overflow = '';
     });
 
     // Close mobile menu when clicking a link
     document.querySelectorAll('#mobile-menu a').forEach(link => {
         link.addEventListener('click', () => {
             mobileMenu.classList.remove('open');
-            menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+            document.body.style.overflow = '';
         });
     });
+
+    // Resume modal functionality
+    const resumeModal = document.getElementById('resume-modal');
+    const resumeBtns = ['resume-btn-desktop', 'resume-btn-mobile', 'resume-btn-hero'];
+    const closeModalBtn = document.querySelector('.close-modal');
+    const downloadBtn = document.getElementById('download-resume');
+    const printBtn = document.getElementById('print-resume');
+
+    // Open modal on all resume buttons
+    resumeBtns.forEach(btnId => {
+        const btn = document.getElementById(btnId);
+        if (btn) {
+            btn.addEventListener('click', () => {
+                resumeModal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+                loadPDFPreview();
+            });
+        }
+    });
+
+    // Close modal
+    closeModalBtn.addEventListener('click', () => {
+        resumeModal.classList.remove('active');
+        document.body.style.overflow = '';
+    });
+
+    // Close modal when clicking outside
+    resumeModal.addEventListener('click', (e) => {
+        if (e.target === resumeModal) {
+            resumeModal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    });
+
+    // Download resume
+    downloadBtn.addEventListener('click', () => {
+        // Replace with your actual resume URL
+        const resumeUrl = 'https://example.com/path-to-your-resume.pdf';
+        const link = document.createElement('a');
+        link.href = resumeUrl;
+        link.download = 'Pavan_Kumar_KR_Resume.pdf';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    });
+
+    // Print resume
+    printBtn.addEventListener('click', () => {
+        // You can either print the PDF or show a printable version
+        window.open('https://github.com/pavankumarkr98/pavankumarkr98.github.io/blob/base/Pavan%20Kumar-Resume_AI.pdf', '_blank');
+    });
+
+    // Load PDF preview
+    async function loadPDFPreview() {
+        const pdfViewer = document.getElementById('pdf-viewer');
+        const fallbackInfo = document.getElementById('resume-fallback');
+        
+        try {
+            // Replace with your actual PDF URL
+            const pdfUrl = 'https://github.com/pavankumarkr98/pavankumarkr98.github.io/blob/base/Pavan%20Kumar-Resume_AI.pdf';
+            
+            // Initialize PDF.js
+            const pdfjsLib = window['pdfjs-dist/build/pdf'];
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+            
+            const loadingTask = pdfjsLib.getDocument(pdfUrl);
+            const pdf = await loadingTask.promise;
+            
+            // Clear loading message
+            pdfViewer.innerHTML = '';
+            
+            // Render each page
+            for (let pageNum = 1; pageNum <= Math.min(pdf.numPages, 2); pageNum++) {
+                const page = await pdf.getPage(pageNum);
+                const scale = 1.5;
+                const viewport = page.getViewport({ scale });
+                
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+                canvas.className = 'pdf-page';
+                
+                const renderContext = {
+                    canvasContext: context,
+                    viewport: viewport
+                };
+                
+                await page.render(renderContext).promise;
+                pdfViewer.appendChild(canvas);
+            }
+            
+            fallbackInfo.classList.add('hidden');
+        } catch (error) {
+            console.error('Error loading PDF:', error);
+            pdfViewer.innerHTML = '<div class="text-center py-8 text-red-400"><i class="fas fa-exclamation-triangle text-4xl mb-4"></i><p>Unable to load PDF preview</p></div>';
+            fallbackInfo.classList.remove('hidden');
+        }
+    }
+
+    // Initialize EmailJS (Replace with your actual EmailJS public key)
+    (function() {
+        emailjs.init("YOUR_PUBLIC_KEY"); // Get from EmailJS dashboard
+    })();
 
     // Scroll animations
     const observer = new IntersectionObserver(entries => {
@@ -821,7 +1016,7 @@
             from_email: document.getElementById('email').value,
             subject: document.getElementById('subject').value,
             message: document.getElementById('message').value,
-            to_email: 'pavankumarkr98@gmail.com' // Your email
+            to_email: 'pavankumarkr98@gmail.com'
         };
         
         // Send email using EmailJS
@@ -897,6 +1092,15 @@
             parallax.style.transform = `translateY(${scrolled * 0.5}px)`;
         }
     });
+
+    // Fix for iOS Safari 100vh issue
+    function setVH() {
+        let vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty('--vh', `${vh}px`);
+    }
+    
+    setVH();
+    window.addEventListener('resize', setVH);
 </script>
 
 </body>
